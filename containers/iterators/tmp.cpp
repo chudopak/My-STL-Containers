@@ -7,11 +7,13 @@ int main() {
 
 	x = 5;
 	i = &x;
-	ft::random_access_iterator<Test>		test;
-	ft::random_access_iterator<int>		test1(i);
-	ft::random_access_iterator<int>		test2(test1);
-	std::cout << i << "     " << *i << std::endl;
-	std::cout << i << "     " << *i << std::endl;
+	ft::random_access_iterator<const int>		test;
+	ft::random_access_iterator<const int>		test1(i);
+	ft::random_access_iterator<const int>		test2(test1);
+	test = test2;
+	
+	std::cout << test2[0] << std::endl;
+	std::cout << (test2 +  1)[0] << std::endl;
 
 	return (0);
 }
