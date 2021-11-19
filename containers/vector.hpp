@@ -1,5 +1,5 @@
 #ifndef VECTOR_HPP
-# define VECTORL_HPP
+# define VECTOR_HPP
 
 # include "headers.hpp"
 
@@ -25,14 +25,14 @@ namespace ft
 		typedef typename ft::iterator_traits<iterator>::difference_type	difference_type;
 		typedef typename allocator_type::size_type						size_type;
 
-		explicit vector (const allocator_type& alloc = allocator_type()) :
+		explicit	vector (const allocator_type& alloc = allocator_type()) :
 			_start(my_nullptr),
 			_end(my_nullptr),
 			_capacity(my_nullptr),
 			_alloc(alloc)
 		{ }
 
-		explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) :
+		explicit	vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) :
 			_start(my_nullptr),
 			_end(my_nullptr),
 			_capacity(my_nullptr),
@@ -42,10 +42,37 @@ namespace ft
 			_start = _alloc.allocate(n);
 			_capacity = _start + n;
 			_end = _start;
-			while (n--) {
+			for (size_type i = 0; i < n; i++) {
 				//https://www.cplusplus.com/reference/memory/allocator/construct/
 				_alloc.construct(_end, val);
 				_end++;
+			}
+		}
+
+		// template <class InputIterator>
+		// vector (InputIterator first, InputIterator last,
+		// 	const allocator_type& alloc = allocator_type()) {
+
+		// }
+
+		~vector(void) {
+			clear();
+			_alloc.deallocate(_start, capacity());
+		}
+
+		size_type	size(void) const {
+			return (_end - _start);
+		}
+
+		size_type	capacity (void) const {
+			return (this->_capacity - this->_start);
+		}
+
+		void	clear() {
+			size_type save_size = this->size();
+			for (size_type i = 0; i < save_size; i++) {
+				_end--;
+				_alloc.destroy(_end);
 			}
 		}
 	
