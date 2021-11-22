@@ -49,11 +49,33 @@ namespace ft
 			}
 		}
 
-		// template <class InputIterator>
-		// vector (InputIterator first, InputIterator last,
-		// 	const allocator_type& alloc = allocator_type()) {
+		template <class InputIterator>
+		vector (InputIterator first, InputIterator last,
+			const allocator_type& alloc = allocator_type()) :
+			_alloc(alloc) 
+		{
+			// Checking is iterator match with those five iteratros tags in utils
+			bool is_valid;
+			if (!(is_valid = ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value))
+				throw (ft::InvalidIteratorException<typename ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::type>());
+			difference_type n = ft::distance(first, last);
+			_start = _alloc.allocate( n );
+			_capacity = _start + n;
+			_end = _start;
+			for (size_type i = 0; i < n; i++) {
+				_alloc.construct(_end, *first++);
+				_end++;
+			}
+		}
 
-		// }
+		vector (const vector& x) :
+			_alloc(x._alloc),
+			_start(my_nullptr),
+			_end(my_nullptr),
+			_capacity(my_nullptr)
+		{
+			//this->insert(this->begin(), x.begin(), x.end());
+		}
 
 		~vector(void) {
 			clear();
