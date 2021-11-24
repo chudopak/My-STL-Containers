@@ -20,7 +20,7 @@ namespace ft
 		typedef ft::random_access_iterator<value_type>					iterator;
 		typedef ft::random_access_iterator<const value_type>			const_iterator;
 		typedef ft::reverse_iterator<iterator>							reverse_iterator;
-		typedef ft::reverse_iterator<const iterator>					const_reverse_iterator;
+		typedef ft::reverse_iterator<const_iterator>					const_reverse_iterator;
 
 		typedef typename ft::iterator_traits<iterator>::difference_type	difference_type;
 		typedef typename allocator_type::size_type						size_type;
@@ -59,8 +59,8 @@ namespace ft
 			_alloc(alloc) 
 		{
 			// Checking is iterator match with those five iteratros tags in utils
-			if (!ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value)
-				throw (ft::InvalidIteratorException<typename ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::type>());
+			// if (!ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value)
+			// 	throw (ft::InvalidIteratorException<typename ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::type>());
 			difference_type n = ft::distance(first, last);
 			_start = _alloc.allocate( n );
 			_capacity = _start + n;
@@ -77,7 +77,7 @@ namespace ft
 			_end(my_nullptr),
 			_capacity(my_nullptr)
 		{
-			//this->insert(this->begin(), x.begin(), x.end());
+			this->insert(this->begin(), x.begin(), x.end());
 		}
 
 		~vector(void) {
@@ -87,6 +87,9 @@ namespace ft
 
 		/*
 		**	Capacity
+		**	Need to realisation:
+		**	- resize
+		**	- reserve
 		*/
 		size_type	size(void) const {
 			return (_end - _start);
@@ -106,14 +109,6 @@ namespace ft
 
 		bool		empty() const {
 			return (_start == _end);
-		}
-
-		void	clear() {
-			size_type save_size = this->size();
-			for (size_type i = 0; i < save_size; i++) {
-				_end--;
-				_alloc.destroy(_end);
-			}
 		}
 
 		/*
@@ -144,18 +139,15 @@ namespace ft
 
 		const_reference	operator[](size_type n) const { return(*(_start + n)); }
 
-		// reference		at(size_type n) {
-		// 	_checkRange(n);
-		// 	return ((*this)[n]);
-		// }
+		reference		at(size_type n) {
+			_checkRange(n);
+			return ((*this)[n]);
+		}
 
-		// const_reference	at(size_type n) const {
-		// 	_checkRange(n);
-		// 	return ((*this)[n]);
-		// }
-
-		reference at (size_type n) { if (n > size()) throw std::out_of_range("vector::at"); return (*this)[n]; }
-		const_reference at (size_type n) const { if (n > size()) throw std::out_of_range("vector::at"); return (*this)[n]; }
+		const_reference	at(size_type n) const {
+			_checkRange(n);
+			return ((*this)[n]);
+		}
 
 		reference		front() { return (*_start); }
 
@@ -164,6 +156,61 @@ namespace ft
 		reference		back() { return (*(_end - 1)); }
 
 		const_reference back() const { return (*(_end - 1)); }
+
+		/*
+		**	Modifiers
+		*/
+
+
+		template<class InputIterator>
+		void	insert(iterator position, InputIterator first, InputIterator last,
+				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = my_nullptr) {
+
+			// if (!ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value)
+			// 	throw (ft::InvalidIteratorException<typename ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::type>());
+
+			size_type	dist = static_cast<size_type>(ft::distance(first, last));
+			if (dist + size() <= capacity()) {
+				for (pointer it = _end; it >= &(*position) ; it--)
+					_alloc.construct(it + dist, *it);
+				_end += dist;
+				for (; first != last; position++, first++)
+					_alloc.construct(&(*position), *first);
+			}
+			else {
+				pointer		newStart = pointer();
+				pointer		newEnd = pointer();
+				pointer		newCapacity = pointer();
+				size_type	newSize = this->size() + dist + static_cast<size_type>((this->size() + dist) / 3);
+
+				newStart = _alloc.allocate(newSize);
+				newEnd = newStart + this->size() + dist;
+				newCapacity = newStart + newSize;
+
+				for (int i = 0; i < &(*position) - _start; i++)
+					_alloc.construct(newStart + i, *(_start + i));
+				for (int i = 0; &(*first) != &(*last); first++, i++)
+					_alloc.construct(newStart + (&(*position) - _start) + i, *first);
+				for (size_type i = 0; i < this->size() - (&(*position) - _start); i++)
+					_alloc.construct(newStart + (&(*position) - _start) + dist + i, *(_start + (&(*position) - _start) + i));
+				for (size_type i = 0; i < this->size(); i++)
+					_alloc.destroy(_start + i);
+				
+				_alloc.deallocate(_start, this->capacity());
+				_start = newStart;
+				_end = newEnd;
+				_capacity = newCapacity;
+			}
+		}
+
+		void	clear() {
+
+			size_type save_size = this->size();
+			for (size_type i = 0; i < save_size; i++) {
+				_end--;
+				_alloc.destroy(_end);
+			}
+		}
 
 	private:
 		pointer			_start;

@@ -21,9 +21,7 @@ my_nullptr_t	my_nullptr;
 
 namespace ft
 {
-	/*
-	** Iterators tags https://www.cplusplus.com/reference/iterator/iterator/
-	*/
+
 
 	template <typename T>
 	std::string to_string(T n)
@@ -38,6 +36,10 @@ namespace ft
 		typedef T type;
 		const static bool value = is_valid;
 	};
+
+	/*
+	** Iterators tags https://www.cplusplus.com/reference/iterator/iterator/
+	*/
 
 	class random_access_iterator_tag { };
 	class bidirectional_iterator_tag { };
@@ -225,16 +227,21 @@ namespace ft
 		typedef ft::random_access_iterator_tag			iterator_category;
 	};
 
-	template<class InputIterator>
+	/*
+	** Function to find difference btw the element of container
+	*/
+
+	template<typename InputIterator>
 	typename ft::iterator_traits<InputIterator>::difference_type
-		distance (InputIterator first, InputIterator last) {
-		
-		typename ft::iterator_traits<InputIterator>::difference_type itr = 0;
+			distance(InputIterator first, InputIterator last) {
+
+		typename ft::iterator_traits<InputIterator>::difference_type	dst = 0;
+
 		while (first != last) {
 			first++;
-			itr++;
+			dst++;
 		}
-		return (itr);
+		return (dst);
 	}
 }
 
