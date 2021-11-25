@@ -72,10 +72,10 @@ namespace ft
 		}
 
 		vector (const vector& x) :
-			_alloc(x._alloc),
 			_start(my_nullptr),
 			_end(my_nullptr),
-			_capacity(my_nullptr)
+			_capacity(my_nullptr),
+			_alloc(x._alloc)
 		{
 			this->insert(this->begin(), x.begin(), x.end());
 		}
@@ -85,11 +85,17 @@ namespace ft
 			_alloc.deallocate(_start, capacity());
 		}
 
+		vector	&operator=(const vector& vec) {
+
+			if (vec == *this)
+				return (*this);
+			this->clear();
+			this->insert(this->begin(), vec.begin(), vec.end());
+		}
 		/*
 		**	Capacity
 		**	Need to realisation:
 		**	- resize
-		**	- reserve
 		*/
 		size_type	size(void) const {
 			return (_end - _start);
@@ -103,12 +109,47 @@ namespace ft
 			return (allocator_type().max_size());
 		}
 
-		// void		resize(size_type n, value_type val = value_type()) {
-
-		// }
+		//test this
+		void		resize(size_type n, value_type val = value_type()) {
+			if (n > this->max_size())
+				throw (std::length_error("vector::resize"));
+			else if (n >= this->size())
+				this->insert(this->end(), n - this->size(), val);
+			else {
+				while (this->size() > n) {
+					_alloc.destroy(_end);
+					--_end;
+				}
+			}
+		}
 
 		bool		empty() const {
 			return (_start == _end);
+		}
+
+		void		reserve(size_type n) {
+
+			if (n <= this->capacity())
+				return ;
+			else if (n > this->max_size())
+				throw (std::length_error("vector::reserve"));
+
+			pointer		newStart = pointer();
+			pointer		newEnd = pointer();
+			pointer		newCapacity = pointer();
+
+			newStart = _alloc.allocate(n);
+			newEnd = newStart;
+			newCapacity = newStart + n;
+
+			for (size_type i = 0; _start + i < _end; i++) {
+				_alloc.construct(newEnd, *(_start + i));
+				newEnd++;
+			}
+			_alloc.deallocate(_start, this->capacity());
+			_start = newStart;
+			_end = newEnd;
+			_capacity = newCapacity;
 		}
 
 		/*
@@ -161,6 +202,81 @@ namespace ft
 		**	Modifiers
 		*/
 
+		iterator		insert(iterator position, const value_type& val) {
+
+			size_type cell_index = &(*position) - _start;
+
+			if (size() < capacity()) {
+				for (pointer it = _end; it >= &(*position); it--)
+					_alloc.construct(it + 1, *it);
+				_end++;
+				_alloc.construct(&(*position), val);
+			}
+			else {
+				pointer		newStart = pointer();
+				pointer		newEnd = pointer();
+				pointer		newCapacity = pointer();
+				size_type	newSize = this->size() + 1 + static_cast<size_type>((this->size() + 1) / 3);
+
+				newStart = _alloc.allocate(newSize);
+				newEnd = newStart + this->size() + 1;
+				newCapacity = newStart + newSize;
+
+				for (int i = 0; i < &(*position) - _start; i++)
+					_alloc.construct(newStart + i, *(_start + i));
+				_alloc.construct(&(*position), val);
+				for (size_type i = 0; i < this->size() - (&(*position) - _start); i++)
+					_alloc.construct(newStart + (&(*position) - _start) + 1 + i, *(&(*position) + i));
+				if (_start)
+					_alloc.deallocate(_start, this->capacity());
+				_start = newStart;
+				_end = newEnd;
+				_capacity = newCapacity;
+			}
+			return (iterator(_start + cell_index));
+		}
+
+		void			insert(iterator position, size_type n, const value_type& val) {
+
+			if (n > this->max_size())
+				throw(std::length_error("vector: insert n > max_size"));
+			if (n == 0)
+				return ;
+
+			size_type cell_index = &(*position) - _start;
+
+			if (size() < capacity()) {
+				for (pointer it = _end; it >= &(*position); it--)
+					_alloc.construct(it + 1, *it);
+				_end += n;
+				while (n) {
+					_alloc.construct(&(*position) + (n - 1), val);
+					n--;
+				}
+			}
+			else {
+				pointer		newStart = pointer();
+				pointer		newEnd = pointer();
+				pointer		newCapacity = pointer();
+				size_type	newSize = this->size() + n + static_cast<size_type>((this->size() + n) / 3);
+
+				newStart = _alloc.allocate(newSize);
+				newEnd = newStart + this->size() + n;
+				newCapacity = newStart + newSize;
+
+				for (int i = 0; i < &(*position) - _start; i++)
+					_alloc.construct(newStart + i, *(_start + i));
+				for (size_type i = 0; i < n; i++)
+					_alloc.construct(newStart + cell_index + i, val);
+				for (size_type i = 0; i < this->size() - cell_index; i++)
+					_alloc.construct(newStart + cell_index + n + i, *(&(*position) + i));
+				if (_start)
+					_alloc.deallocate(_start, this->capacity());
+				_start = newStart;
+				_end = newEnd;
+				_capacity = newCapacity;
+			}
+		}
 
 		template<class InputIterator>
 		void	insert(iterator position, InputIterator first, InputIterator last,
@@ -192,11 +308,12 @@ namespace ft
 				for (int i = 0; &(*first) != &(*last); first++, i++)
 					_alloc.construct(newStart + (&(*position) - _start) + i, *first);
 				for (size_type i = 0; i < this->size() - (&(*position) - _start); i++)
-					_alloc.construct(newStart + (&(*position) - _start) + dist + i, *(_start + (&(*position) - _start) + i));
+					_alloc.construct(newStart + (&(*position) - _start) + dist + i, *(&(*position) + i));
 				for (size_type i = 0; i < this->size(); i++)
 					_alloc.destroy(_start + i);
 				
-				_alloc.deallocate(_start, this->capacity());
+				if (_start)
+					_alloc.deallocate(_start, this->capacity());
 				_start = newStart;
 				_end = newEnd;
 				_capacity = newCapacity;
@@ -218,13 +335,33 @@ namespace ft
 		pointer			_capacity;
 		allocator_type	_alloc;
 
-		void			_checkRange(const size_type& n) const throw(std::out_of_range()) {
+		void			_checkRange(const size_type& n) const {
 			if (n >= this->size())
 				throw(std::out_of_range("vector: Passed number bigger or equal than size: "
 							+ ft::to_string(n) + " >= "
 							+ ft::to_string(this->size())));
 		}
 	};
+
+	template <class T, class Alloc>
+	bool	operator==(const ft::vector<T, Alloc>& lhs, const ft::vector<T, Alloc>& rhs) {
+
+		if (lhs.size() != rhs.size())
+			return (false);
+
+		typename ft::vector<T>::const_iterator	vec1 = lhs.begin();
+		typename ft::vector<T>::const_iterator	vec2 = rhs.begin();
+		typename Alloc::size_type				vec1End = lhs.end();
+		typename Alloc::size_type				vec2End = rhs.end();
+
+		while (vec1 != vec1End) {
+			if (*vec1 != *vec2 || vec2 == vec2End)
+				return (false);
+			++vec1;
+			++vec2;
+		}
+		return (true);
+	}
 }
 
 #endif

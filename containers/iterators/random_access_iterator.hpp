@@ -12,16 +12,18 @@ namespace ft
 	public:
 		typedef typename ft::iterator<ft::random_access_iterator_tag, T>::iterator_category	iterator_category;
 		typedef typename ft::iterator<ft::random_access_iterator_tag, T>::difference_type	difference_type;
+		typedef T*																			pointer;
+		typedef T&																			reference;
 
 		/*
 		** Constructors
 		*/
 		random_access_iterator(void) : _elem(my_nullptr) { }
-		random_access_iterator(T* elem) : _elem(elem) { }
+		random_access_iterator(pointer elem) : _elem(elem) { }
 		random_access_iterator(random_access_iterator const &src) { *this = src; }
 		virtual ~random_access_iterator(void) { }
 
-		T*						base(void) const { return (_elem); }
+		pointer						base(void) const { return (_elem); }
 		random_access_iterator &operator=(random_access_iterator const &src) {
 			if (this == &src)
 				return (*this);
@@ -29,8 +31,8 @@ namespace ft
 			return (*this);
 		}
 
-		T&						operator*(void) const { return (*_elem); }
-		T*						operator->(void) { return (_elem); }
+		reference						operator*(void) const { return (*_elem); }
+		pointer						operator->(void) { return (_elem); }
 		random_access_iterator&	operator++(void) {
 			_elem++;
 			return (*this);
@@ -65,7 +67,7 @@ namespace ft
 			return (*this);
 		}
 
-		T&						operator[](difference_type n) { return (*(_elem + n));}
+		reference						operator[](difference_type n) { return (*(_elem + n));}
 
 		bool					operator==(random_access_iterator const &src) { return  (_elem == src._elem); }
 		bool					operator!=(random_access_iterator const &src) { return  (_elem != src._elem); }
@@ -75,7 +77,7 @@ namespace ft
 		bool					operator<(random_access_iterator const &src) { return  (_elem < src._elem); }
 
 	private:
-		T*	_elem;
+		pointer	_elem;
 	};
 
 	template <class Iterator>

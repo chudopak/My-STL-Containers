@@ -27,6 +27,20 @@ void	printSize(T_MAP const &mp, bool print_content = 1)
 	std::cout << "###############################################" << std::endl;
 }
 
+template <typename T>
+void	print_ft_vector(ft::vector<T>& ft) {
+	for (typename ft::vector<T>::iterator it = ft.begin() ; it != ft.end(); ++it)
+		std::cout << ' ' << *it;
+	std::cout << '\n';
+}
+
+template <typename T>
+void	print_std_vector(std::vector<T>& std) {
+	for (typename std::vector<T>::iterator it = std.begin() ; it != std.end(); ++it)
+		std::cout << ' ' << *it;
+	std::cout << '\n';
+}
+
 void	VectorTests(void) {
 
 	std::cout << BOLD_GREEN << "\t____Testing empty container____" << STANDART << std::endl;
@@ -110,12 +124,9 @@ void	VectorTests(void) {
 			i++;
 		}
 
-		for (ft::vector<int>::iterator it = ft_with_size.begin() ; it != ft_with_size.end(); ++it)
-			std::cout << ' ' << *it;
-		std::cout << '\n';
-		for (std::vector<int>::iterator it = stl_with_size.begin() ; it != stl_with_size.end(); ++it)
-			std::cout << ' ' << *it;
-		std::cout << '\n';
+		
+		print_ft_vector(ft_with_size);
+		print_std_vector(stl_with_size);
 
 		ft_with_size.clear();
 		stl_with_size.clear();
@@ -134,8 +145,8 @@ void	VectorTests(void) {
 	{
 		std::vector<int>	stl_with_size(10);
 		ft::vector<int>		ft_with_size(10);
-		ft::vector<int>		ft_insert(15);
-		std::vector<int>	stl_insert(15);
+		ft::vector<int>		ft_insert(3);
+		std::vector<int>	stl_insert(3);
 
 
 		// for (int i = 0 ; i < 7; ++i) {
@@ -158,24 +169,16 @@ void	VectorTests(void) {
 			tmp = i;
 		}
 
-		for (ft::vector<int>::iterator it = ft_insert.begin() ; it != ft_insert.end(); ++it)
-			std::cout << ' ' << *it;
-		std::cout << '\n';
-		for (std::vector<int>::iterator it = stl_insert.begin() ; it != stl_insert.end(); ++it)
-			std::cout << ' ' << *it;
-		std::cout << '\n';
+		print_ft_vector(ft_insert);
+		print_std_vector(stl_insert);
 
-		ft_with_size.clear();
-		stl_with_size.clear();
-		ft_with_size.insert(ft_with_size.begin(), ft_insert.begin(), ft_insert.end());
-		stl_with_size.insert(stl_with_size.begin(), stl_insert.begin(), stl_insert.end());
+		ft_with_size.reserve(20);
+		stl_with_size.reserve(20);
+		ft_with_size.insert(ft_with_size.begin() + 6, ft_insert.begin(), ft_insert.end());
+		stl_with_size.insert(stl_with_size.begin() + 6, stl_insert.begin(), stl_insert.end());
 
-		for (ft::vector<int>::iterator it = ft_with_size.begin() ; it != ft_with_size.end(); ++it)
-			std::cout << ' ' << *it;
-		std::cout << '\n';
-		for (std::vector<int>::iterator it = stl_with_size.begin() ; it != stl_with_size.end(); ++it)
-			std::cout << ' ' << *it;
-		std::cout << '\n';
+		print_ft_vector(ft_with_size);
+		print_std_vector(stl_with_size);
 
 
 		std::cout << BOLD_RED << UNDERLINE << "size() :" << STANDART;
@@ -187,7 +190,62 @@ void	VectorTests(void) {
 		std::cout << NORMAL << "\t\t" << stl_with_size.capacity() << "\t\t"<< ft_with_size.capacity() << STANDART<< std::endl;
 	}
 
-	// std::cout << BOLD_GREEN << "\t____Testing AT____" << STANDART << std::endl;
+	std::cout << BOLD_GREEN << "\t____Testing reserve()____" << STANDART << std::endl;
+	{
+		std::vector<int>	stl(10);
+		ft::vector<int>		ft(10);
+
+		std::cout << BOLD_GREEN << "Before reserve()" << STANDART<< std::endl;
+		std::cout << BOLD_RED << UNDERLINE << "size() :" << STANDART;
+		std::cout << "\tSTL\t" << "\tFT" << std::endl;
+		std::cout << NORMAL << "\t\t" << stl.size() << "\t\t"<< ft.size() << STANDART<< std::endl;
+
+		std::cout << BOLD_RED << UNDERLINE << "capacity() :" << STANDART;
+		std::cout << "\tSTL\t" << "\tFT" << std::endl;
+		std::cout << NORMAL << "\t\t" << stl.capacity() << "\t\t"<< ft.capacity() << STANDART<< std::endl;
+
+
+		ft.reserve(11);
+		stl.reserve(11);
+		print_ft_vector(ft);
+		print_std_vector(stl);
+		
+		std::cout << BOLD_GREEN << "After reserve()" << STANDART <<std::endl;
+		std::cout << BOLD_RED << UNDERLINE << "size() :" << STANDART;
+		std::cout << "\tSTL\t" << "\tFT" << std::endl;
+		std::cout << NORMAL << "\t\t" << stl.size() << "\t\t"<< ft.size() << STANDART<< std::endl;
+
+		std::cout << BOLD_RED << UNDERLINE << "capacity() :" << STANDART;
+		std::cout << "\tSTL\t" << "\tFT" << std::endl;
+		std::cout << NORMAL << "\t\t" << stl.capacity() << "\t\t"<< ft.capacity() << STANDART<< std::endl;
+
+
+
+
+	}
+	{
+		std::cout << BOLD_GREEN << "\t____Testing insert1()____" << STANDART << std::endl;
+	ft::vector<int> ft(10);
+	ft::vector<int> ft2;
+	std::vector<int> stl(10);
+	std::vector<int> stl2;
+
+	for (unsigned long int i = 0; i < ft.size(); ++i)
+		ft[i] = (ft.size() - i) * 3;
+	ft2.insert(ft2.end(), 42);
+	print_ft_vector(ft);
+	ft2.insert(ft2.begin(), 2, 21);
+
+	ft2.insert(ft2.end() - 2, 42);
+
+	ft2.insert(ft2.end(), 2, 84);
+
+	ft2.resize(4);
+
+	ft2.insert(ft2.begin() + 2, ft.begin(), ft.end());
+	ft.clear();
+	}
+	// std::cout << BOLD_GREEN << "\t____Testing reserv___" << STANDART << std::endl;
 	// {
 	// 	ft::vector<int> vct(7);
 
@@ -197,7 +255,6 @@ void	VectorTests(void) {
 	// 		std::cout << "vct.at(): " << vct.at(i) << " | ";
 	// 		std::cout << "vct[]: " << vct[i] << std::endl;
 	// 	}
-	// 	printSize(vct);
 
 	// 	ft::vector<int> const vct_c(vct);
 

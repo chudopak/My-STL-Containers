@@ -22,7 +22,7 @@ NAME		=	allTests
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	clang++ $(FLAGS) -o $(NAME) $(OBJ)
+	clang++ $(FLAGS) -g -o $(NAME) $(OBJ)
 
 clean:
 	rm -rf $(OBJ)
