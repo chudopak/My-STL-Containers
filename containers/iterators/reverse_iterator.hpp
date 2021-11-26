@@ -2,6 +2,7 @@
 # define REVERSE_ITERATOR_HPP
 
 # include "utils.hpp"
+# include "random_access_iterator.hpp"
 
 
 namespace ft
@@ -18,9 +19,16 @@ namespace ft
 		typedef typename ft::iterator_traits<Iterator>::reference			reference;
 
 		reverse_iterator() : _elem() {}
+
 		explicit reverse_iterator(iterator_type elem) : _elem(elem) {}
-		template <class T>
-		reverse_iterator(const reverse_iterator<T>& rev_it) : _elem(rev_it.base()) {}
+
+		template <class Iter>
+		reverse_iterator (const reverse_iterator<Iter>& rev_it) : _elem(rev_it.base()) {}
+		/* template <class Iter>
+		reverse_iterator (const reverse_iterator<Iter>& rev_it) {
+			_elem = rev_it.base();
+		} */
+
 		virtual ~reverse_iterator() {}
 
 		template< class U >

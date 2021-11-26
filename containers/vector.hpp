@@ -91,11 +91,10 @@ namespace ft
 				return (*this);
 			this->clear();
 			this->insert(this->begin(), vec.begin(), vec.end());
+			return (*this);
 		}
 		/*
 		**	Capacity
-		**	Need to realisation:
-		**	- resize
 		*/
 		size_type	size(void) const {
 			return (_end - _start);
@@ -113,8 +112,9 @@ namespace ft
 		void		resize(size_type n, value_type val = value_type()) {
 			if (n > this->max_size())
 				throw (std::length_error("vector::resize"));
-			else if (n >= this->size())
+			else if (n >= this->size()){
 				this->insert(this->end(), n - this->size(), val);
+			}
 			else {
 				while (this->size() > n) {
 					_alloc.destroy(_end);
@@ -166,11 +166,11 @@ namespace ft
 
 		reverse_iterator		rbegin() { return (reverse_iterator(this->_end)); }
 
-		const_reverse_iterator	rbegin() const { return(reverse_iterator(this->_end)); }
+		const_reverse_iterator	rbegin() const { return(const_reverse_iterator(this->_end)); }
 
 		reverse_iterator		rend() { return (reverse_iterator(this->_start)); }
 
-		const_reverse_iterator	rend() const { return (reverse_iterator(this->_start)); }
+		const_reverse_iterator	rend() const { return (const_reverse_iterator(this->_start)); }
 
 		/*
 		**	Element access
@@ -224,7 +224,7 @@ namespace ft
 
 				for (int i = 0; i < &(*position) - _start; i++)
 					_alloc.construct(newStart + i, *(_start + i));
-				_alloc.construct(&(*position), val);
+				_alloc.construct(newStart + cell_index, val);
 				for (size_type i = 0; i < this->size() - (&(*position) - _start); i++)
 					_alloc.construct(newStart + (&(*position) - _start) + 1 + i, *(&(*position) + i));
 				if (_start)
@@ -245,7 +245,7 @@ namespace ft
 
 			size_type cell_index = &(*position) - _start;
 
-			if (size() < capacity()) {
+			if (static_cast<size_type>(_capacity - _end) >= n) {
 				for (pointer it = _end; it >= &(*position); it--)
 					_alloc.construct(it + 1, *it);
 				_end += n;
@@ -344,21 +344,18 @@ namespace ft
 	};
 
 	template <class T, class Alloc>
-	bool	operator==(const ft::vector<T, Alloc>& lhs, const ft::vector<T, Alloc>& rhs) {
+	bool operator== (const ft::vector<T, Alloc>& lhs, const ft::vector<T, Alloc>& rhs) {
+
+		typename ft::vector<T>::const_iterator vec1 = lhs.begin();
+		typename ft::vector<T>::const_iterator vec2 = rhs.begin();
 
 		if (lhs.size() != rhs.size())
 			return (false);
-
-		typename ft::vector<T>::const_iterator	vec1 = lhs.begin();
-		typename ft::vector<T>::const_iterator	vec2 = rhs.begin();
-		typename Alloc::size_type				vec1End = lhs.end();
-		typename Alloc::size_type				vec2End = rhs.end();
-
-		while (vec1 != vec1End) {
-			if (*vec1 != *vec2 || vec2 == vec2End)
+		while (vec1 != lhs.end()) {
+			if (*vec1 != *vec2 || vec2 == rhs.end())
 				return (false);
-			++vec1;
-			++vec2;
+			vec1++;
+			vec2++;
 		}
 		return (true);
 	}
