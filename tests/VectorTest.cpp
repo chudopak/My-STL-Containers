@@ -216,14 +216,6 @@ void	VectorTests(void) {
 		ft2.insert(ft2.end(), 2, 4);
 		stl2.insert(stl2.end(), 2, 4);
 		print_data_of_compared(stl2, ft2);
-
-		std::cout << YELLOW << "CMP - resize(4) and add range of variables:" << STANDART<< std::endl;
-		std::cout << YELLOW << "vec.insert(vec.begin() + 2, ft.begin(), ft.end());" << STANDART<< std::endl;
-		ft2.resize(4);
-		ft2.insert(ft2.begin() + 2, ft.begin(), ft.end());
-		stl2.resize(4);
-		stl2.insert(stl2.begin() + 2, stl.begin(), stl.end());
-		print_data_of_compared(stl2, ft2);
 	}
 
 	std::cout << BOLD_GREEN << "\t____Testing insert2()____" << STANDART << std::endl;
@@ -351,43 +343,23 @@ void	VectorTests(void) {
 		std2.resize(0);
 		print_data_of_compared(std, ft);
 	}
+
 	{
-		const int size = 5;
-	ft::vector<int> vct(size);
-	ft::vector<int>::reverse_iterator it_0(vct.rbegin());
-	ft::vector<int>::reverse_iterator it_1(vct.rend());
-	ft::vector<int>::reverse_iterator it_mid;
+		 std::vector<int> myvector;
 
-	ft::vector<int>::const_reverse_iterator cit_0 = vct.rbegin();
-	ft::vector<int>::const_reverse_iterator cit_1;
-	ft::vector<int>::const_reverse_iterator cit_mid;
-
-	for (int i = size; it_0 != it_1; --i)
-		*it_0++ = i;
-	it_0 = vct.rbegin();
-	cit_1 = vct.rend();
-	it_mid = it_0 + 3;
-	cit_mid = it_0 + 3; cit_mid = cit_0 + 3; cit_mid = it_mid;
-
-	std::cout << std::boolalpha;
-	std::cout << ((it_0 + 3 == cit_0 + 3) && (cit_0 + 3 == it_mid)) << std::endl;
-
-	std::cout << "\t\tft_eq_ope:" << std::endl;
-	// regular it
-	ft_eq_ope(it_0 + 3, it_mid);
-	ft_eq_ope(it_0, it_1);
-	ft_eq_ope(it_1 - 3, it_mid);
-	// const it
-	ft_eq_ope(cit_0 + 3, cit_mid);
-	ft_eq_ope(cit_0, cit_1);
-	ft_eq_ope(cit_1 - 3, cit_mid);
-	// both it
-	ft_eq_ope(it_0 + 3, cit_mid);
-	ft_eq_ope(it_mid, cit_0 + 3);
-	ft_eq_ope(it_0, cit_1);
-	ft_eq_ope(it_1, cit_0);
-	ft_eq_ope(it_1 - 3, cit_mid);
-	ft_eq_ope(it_mid, cit_1 - 3);
+		// set some values (from 1 to 10)
+		for (int i=1; i<=10; i++) myvector.push_back(i);		
+		std::cout << myvector.capacity() <<std::endl;
+		// erase the 6th element
+		myvector.erase (myvector.begin()+5);
+		std::cout << myvector.capacity() <<std::endl;
+		// erase the first 3 elements:
+		myvector.erase (myvector.begin(),myvector.begin()+3);
+		std::cout << myvector.capacity() <<std::endl;
+		std::cout << "myvector contains:";
+		for (unsigned i=0; i<myvector.size(); ++i)
+		  std::cout << ' ' << myvector[i];
+		std::cout << std::endl << myvector.capacity() <<std::endl;
 
 	}
 	// std::cout << BOLD_GREEN << "\t____Testing reserv___" << STANDART << std::endl;

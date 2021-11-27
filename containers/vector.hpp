@@ -65,7 +65,7 @@ namespace ft
 			_start = _alloc.allocate( n );
 			_capacity = _start + n;
 			_end = _start;
-			for (size_type i = 0; i < n; i++) {
+			for (int i = 0; i < n; i++) {
 				_alloc.construct(_end, *first++);
 				_end++;
 			}
@@ -202,6 +202,62 @@ namespace ft
 		**	Modifiers
 		*/
 
+		void			assign(size_type n, const value_type& val) {
+			resize(n);
+			for (size_type i = 0; i < n; i++) {
+				_start[i] = val;
+			}
+		}
+
+		template <class InputIterator>
+		void			assign(InputIterator first, InputIterator last,
+			typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = my_nullptr) {
+
+			resize(static_cast<size_type>(ft::distance(first, last)));
+			for (size_type i = 0; first != last; first++, i++) {
+				_start[i] = *first;
+			}
+		}
+
+		void			push_back(const value_type& val) {
+			if (_end == _capacity)
+				reserve(static_cast<size_type>(this->size() + 1 + (this->size() + 1) / 3));
+			_alloc.construct(_end, val);
+			_end++;
+		}
+
+		void			pop_back(void) {
+			if (size() > 0) {
+				_alloc.destroy(_end);
+				_end--;
+			}
+		}
+
+		iterator		erase(iterator position) {
+
+			size_type	size = this->size();
+			for (size_type i = &(*position) - _start; i < size - 1; i++) {
+				_start[i] = _start[i + 1];
+			}
+			_alloc.destroy(_end - 1);
+			--_end;
+			return (position);
+		}
+
+		iterator erase (iterator first, iterator last) {
+
+			pointer first_pointer = &(*first);
+			for (; first_pointer != &(*last); first_pointer++)
+				_alloc.destroy(first_pointer);
+			first_pointer = &(*first);
+			for (int i = 0; i < _end - &(*last); i++) {
+				_alloc.construct(first_pointer + i, *(&(*last) + i));
+				_alloc.destroy(&(*last) + i);
+			}
+			_end -= (&(*last) - first_pointer);
+			return (first);
+		}
+
 		iterator		insert(iterator position, const value_type& val) {
 
 			size_type cell_index = &(*position) - _start;
@@ -227,7 +283,7 @@ namespace ft
 				_alloc.construct(newStart + cell_index, val);
 				for (size_type i = 0; i < this->size() - (&(*position) - _start); i++)
 					_alloc.construct(newStart + (&(*position) - _start) + 1 + i, *(&(*position) + i));
-				if (_start)
+				if (_start != my_nullptr)
 					_alloc.deallocate(_start, this->capacity());
 				_start = newStart;
 				_end = newEnd;
@@ -270,7 +326,7 @@ namespace ft
 					_alloc.construct(newStart + cell_index + i, val);
 				for (size_type i = 0; i < this->size() - cell_index; i++)
 					_alloc.construct(newStart + cell_index + n + i, *(&(*position) + i));
-				if (_start)
+				if (_start != my_nullptr)
 					_alloc.deallocate(_start, this->capacity());
 				_start = newStart;
 				_end = newEnd;
@@ -312,7 +368,7 @@ namespace ft
 				for (size_type i = 0; i < this->size(); i++)
 					_alloc.destroy(_start + i);
 				
-				if (_start)
+				if (_start != my_nullptr)
 					_alloc.deallocate(_start, this->capacity());
 				_start = newStart;
 				_end = newEnd;
