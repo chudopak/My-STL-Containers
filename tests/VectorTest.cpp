@@ -362,6 +362,8 @@ void	VectorTests(void) {
 		std::cout << std::endl << myvector.capacity() <<std::endl;
 
 	}
+
+	
 	// std::cout << BOLD_GREEN << "\t____Testing reserv___" << STANDART << std::endl;
 	// {
 	// 	ft::vector<int> vct(7);
