@@ -272,7 +272,11 @@ namespace ft
 				pointer		newStart = pointer();
 				pointer		newEnd = pointer();
 				pointer		newCapacity = pointer();
-				size_type	newSize = this->size() + 1 + static_cast<size_type>((this->size() + 1) / 3);
+				size_type	newSize;
+				if (this->size() > 100000)
+					newSize =  this->size() + 1 + static_cast<size_type>((this->size() / 100));
+				else
+					newSize = this->size() + 1 + static_cast<size_type>((this->size() + 1) / 3);
 
 				newStart = _alloc.allocate(newSize);
 				newEnd = newStart + this->size() + 1;
@@ -314,7 +318,11 @@ namespace ft
 				pointer		newStart = pointer();
 				pointer		newEnd = pointer();
 				pointer		newCapacity = pointer();
-				size_type	newSize = this->size() + n + static_cast<size_type>((this->size() + n) / 3);
+				size_type	newSize;
+				if (this->size() > 100000)
+					newSize = this->size() + n + static_cast<size_type>((this->size() / 100));
+				else
+					newSize = this->size() + n + static_cast<size_type>((this->size() + n) / 3);
 
 				newStart = _alloc.allocate(newSize);
 				newEnd = newStart + this->size() + n;
@@ -353,7 +361,11 @@ namespace ft
 				pointer		newStart = pointer();
 				pointer		newEnd = pointer();
 				pointer		newCapacity = pointer();
-				size_type	newSize = this->size() + dist + static_cast<size_type>((this->size() + dist) / 3);
+				size_type	newSize;
+				if (this->size() > 100000)
+					newSize = this->size() + dist + static_cast<size_type>((this->size() / 100));
+				else
+					newSize = this->size() + dist + static_cast<size_type>((this->size() + dist) / 3);
 
 				newStart = _alloc.allocate(newSize);
 				newEnd = newStart + this->size() + dist;

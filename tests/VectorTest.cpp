@@ -3,40 +3,6 @@
 #include <iostream>
 #include "tests.hpp"
 
-template <typename T>
-std::string	printPair(const T &iterator, bool nl = true, std::ostream &o = std::cout)
-{
-	o << "key: " << iterator->first << " | value: " << iterator->second;
-	if (nl)
-		o << std::endl;
-	return ("");
-}
-
-template <typename Ite_1, typename Ite_2>
-void ft_eq_ope(const Ite_1 &first, const Ite_2 &second, const bool redo = 1)
-{
-	std::cout << (first < second) << std::endl;
-	std::cout << (first <= second) << std::endl;
-	std::cout << (first > second) << std::endl;
-	std::cout << (first >= second) << std::endl;
-	if (redo)
-		ft_eq_ope(second, first, 0);
-}
-
-template <typename T_MAP>
-void	printSize(T_MAP const &mp, bool print_content = 1)
-{
-	std::cout << "size: " << mp.size() << std::endl;
-	std::cout << "max_size: " << mp.max_size() << std::endl;
-	if (print_content)
-	{
-		typename T_MAP::const_iterator it = mp.begin(), ite = mp.end();
-		std::cout << std::endl << "Content is:" << std::endl;
-		for (; it != ite; ++it)
-			std::cout << "- " << printPair(it, false) << std::endl;
-	}
-	std::cout << "###############################################" << std::endl;
-}
 
 template <typename T>
 void	print_ft_vector(ft::vector<T>& ft) {
@@ -74,6 +40,51 @@ bool	cmp_containers(std::vector<T>& stl, ft::vector<T>& ft) {
 
 template <typename T>
 void	print_data_of_compared(std::vector<T>& stl, ft::vector<T>& ft) {
+
+	std::cout << BOLD_RED << UNDERLINE << "size() :" << STANDART;
+	std::cout << "\tSTL\t" << "\tFT" << std::endl;
+	std::cout << NORMAL << "\t\t" << stl.size() << "\t\t"<< ft.size() << STANDART<< std::endl;
+	
+	std::cout << BOLD_RED << UNDERLINE << "capacity() :" << STANDART;
+	std::cout << "\tSTL\t" << "\tFT" << std::endl;
+	std::cout << NORMAL << "\t\t" << stl.capacity() << "\t\t"<< ft.capacity() << STANDART<< std::endl;
+
+	std::cout << BOLD_RED << UNDERLINE << "compare\t" << STANDART;
+	if (cmp_containers(stl, ft)) {
+		std::cout << "\t\U0001F600\U00002705" << std::endl << std::endl;
+	} else {
+		std::cout << "\t\U0000274C" << std::endl << std::endl;
+	}
+}
+
+void	print_time(long stl, long ft) {
+	std::cout << BOLD_RED << UNDERLINE << "time :" << STANDART;
+	std::cout << "\t\tSTL\t" << "\tFT" << std::endl;
+	std::cout << NORMAL << "\t\t" << stl << "\t\t"<< ft << STANDART<< std::endl;
+}
+
+template <typename T>
+bool	cmp_containers(std::vector<T>& stl, std::vector<T>& ft) {
+
+	if (stl.size() == 0 && ft.size() == 0)
+		return (true);
+	if (stl.size() != ft.size())
+		return (false);
+
+	typename std::vector<T>::iterator it = stl.begin();
+	typename std::vector<T>::iterator ite = ft.begin();
+
+	while (it < stl.end()) {
+		if (*it != *ite)
+			return (false);
+		it++;
+		ite++;
+	}
+	return (true);
+}
+
+template <typename T>
+void	print_data_of_compared(std::vector<T>& stl, std::vector<T>& ft) {
 
 	std::cout << BOLD_RED << UNDERLINE << "size() :" << STANDART;
 	std::cout << "\tSTL\t" << "\tFT" << std::endl;
@@ -129,7 +140,128 @@ void	VectorTests(void) {
 		ft::vector<int>		ft_with_size(9);
 
 		print_data_of_compared(stl_with_size, ft_with_size);
+	}
+
+	std::cout << BOLD_GREEN << "\t____Testing First Constructor With 30000000 Size____" << STANDART << std::endl;
+	{
+		struct timeval		stlStart;
+		struct timeval		stlEnd;
 		
+		gettimeofday(&stlStart, NULL);
+		long	stlStartMil = stlStart.tv_sec * 1000 + stlStart.tv_usec / 1000;
+
+		std::vector<int> stdBig2(30000000);
+
+		gettimeofday(&stlEnd, NULL);
+
+		long	stlEndMil = stlEnd.tv_sec * 1000 + stlEnd.tv_usec / 1000;
+		long	stlDiff = stlEndMil - stlStartMil;
+
+		struct timeval		ftStart;
+		struct timeval		ftEnd;
+		long				ftStartMil;
+		gettimeofday(&ftStart, NULL);
+		ftStartMil = ftStart.tv_sec * 1000 + ftStart.tv_usec / 1000;
+		ft::vector<int> ftBig2(30000000);
+
+		gettimeofday(&ftEnd, NULL);
+		long	ftEndMil = ftEnd.tv_sec * 1000 + ftEnd.tv_usec / 1000;
+		long	ftDiff = ftEndMil - ftStartMil;
+		print_data_of_compared(stdBig2, ftBig2);
+		print_time(stlDiff, ftDiff);
+	}
+
+	std::cout << BOLD_GREEN << "\t____Testing Second Constructor With 30000000 Size____" << STANDART << std::endl;
+	{
+		struct timeval		stlStart;
+		struct timeval		stlEnd;
+		
+		gettimeofday(&stlStart, NULL);
+		long	stlStartMil = stlStart.tv_sec * 1000 + stlStart.tv_usec / 1000;
+
+		std::vector<int> stdBig2(30000000, 1);
+
+		gettimeofday(&stlEnd, NULL);
+
+		long	stlEndMil = stlEnd.tv_sec * 1000 + stlEnd.tv_usec / 1000;
+		long	stlDiff = stlEndMil - stlStartMil;
+
+		struct timeval		ftStart;
+		struct timeval		ftEnd;
+		long				ftStartMil;
+		gettimeofday(&ftStart, NULL);
+		ftStartMil = ftStart.tv_sec * 1000 + ftStart.tv_usec / 1000;
+		ft::vector<int> ftBig2(30000000, 1);
+
+		gettimeofday(&ftEnd, NULL);
+		long	ftEndMil = ftEnd.tv_sec * 1000 + ftEnd.tv_usec / 1000;
+		long	ftDiff = ftEndMil - ftStartMil;
+		print_data_of_compared(stdBig2, ftBig2);
+		print_time(stlDiff, ftDiff);
+	}
+
+	std::cout << BOLD_GREEN << "\t____Testing Third Constructor With 30000000 Size____" << STANDART << std::endl;
+	{
+		struct timeval		stlStart;
+		struct timeval		stlEnd;
+		
+		std::vector<int> stdBig2(30000000, 1);
+		gettimeofday(&stlStart, NULL);
+		long	stlStartMil = stlStart.tv_sec * 1000 + stlStart.tv_usec / 1000;
+
+		std::vector<int> stdBig(stdBig2.begin(), stdBig2.end());
+
+		gettimeofday(&stlEnd, NULL);
+
+		long	stlEndMil = stlEnd.tv_sec * 1000 + stlEnd.tv_usec / 1000;
+		long	stlDiff = stlEndMil - stlStartMil;
+
+		struct timeval		ftStart;
+		struct timeval		ftEnd;
+
+		ft::vector<int> ftBig2(30000000, 1);
+		gettimeofday(&ftStart, NULL);
+		long	ftStartMil = ftStart.tv_sec * 1000 + ftStart.tv_usec / 1000;
+
+		ft::vector<int> ftBig(ftBig2.begin(), ftBig2.end());
+
+		gettimeofday(&ftEnd, NULL);
+		long	ftEndMil = ftEnd.tv_sec * 1000 + ftEnd.tv_usec / 1000;
+		long	ftDiff = ftEndMil - ftStartMil;
+		print_data_of_compared(stdBig2, ftBig2);
+		print_time(stlDiff, ftDiff);
+	}
+
+	std::cout << BOLD_GREEN << "\t____Testing Copy Constructor With 30000000 Size____" << STANDART << std::endl;
+	{
+		struct timeval		stlStart;
+		struct timeval		stlEnd;
+		
+		std::vector<int> stdBig2(30000000, 1);
+		gettimeofday(&stlStart, NULL);
+		long	stlStartMil = stlStart.tv_sec * 1000 + stlStart.tv_usec / 1000;
+
+		std::vector<int> stdBig(stdBig2);
+
+		gettimeofday(&stlEnd, NULL);
+
+		long	stlEndMil = stlEnd.tv_sec * 1000 + stlEnd.tv_usec / 1000;
+		long	stlDiff = stlEndMil - stlStartMil;
+
+		struct timeval		ftStart;
+		struct timeval		ftEnd;
+
+		ft::vector<int> ftBig2(30000000, 1);
+		gettimeofday(&ftStart, NULL);
+		long	ftStartMil = ftStart.tv_sec * 1000 + ftStart.tv_usec / 1000;
+
+		ft::vector<int> ftBig(ftBig2);
+
+		gettimeofday(&ftEnd, NULL);
+		long	ftEndMil = ftEnd.tv_sec * 1000 + ftEnd.tv_usec / 1000;
+		long	ftDiff = ftEndMil - ftStartMil;
+		print_data_of_compared(stdBig2, ftBig2);
+		print_time(stlDiff, ftDiff);
 	}
 
 	std::cout << BOLD_GREEN << "\t____Testing Capacity____" << STANDART << std::endl;
@@ -216,6 +348,41 @@ void	VectorTests(void) {
 		ft2.insert(ft2.end(), 2, 4);
 		stl2.insert(stl2.end(), 2, 4);
 		print_data_of_compared(stl2, ft2);
+
+
+		std::cout << YELLOW << "CMP - huge size" << STANDART<< std::endl;
+		std::cout << YELLOW << "stdBig2.insert(stdBig2.end(), 100000000, 1);" << STANDART<< std::endl;
+		struct timeval		stlStart;
+		struct timeval		stlEnd;
+		
+		gettimeofday(&stlStart, NULL);
+		long	stlStartMil = stlStart.tv_sec * 1000 + stlStart.tv_usec / 1000;
+
+		std::vector<int> stdBig(10000000, 3);
+		std::vector<int> stdBig2(300000);
+
+		stdBig2.insert(stdBig2.end(), 10000000, 1);
+
+		gettimeofday(&stlEnd, NULL);
+
+		long	stlEndMil = stlEnd.tv_sec * 1000 + stlEnd.tv_usec / 1000;
+		long	stlDiff = stlEndMil - stlStartMil;
+
+		struct timeval		ftStart;
+		struct timeval		ftEnd;
+		long				ftStartMil;
+		gettimeofday(&ftStart, NULL);
+		ftStartMil = ftStart.tv_sec * 1000 + ftStart.tv_usec / 1000;
+		ft::vector<int> ftBig(10000000, 3);
+		ft::vector<int> ftBig2(300000);
+
+		ftBig2.insert(ftBig2.end(), 10000000, 1);
+
+		gettimeofday(&ftEnd, NULL);
+		long	ftEndMil = ftEnd.tv_sec * 1000 + ftEnd.tv_usec / 1000;
+		long	ftDiff = ftEndMil - ftStartMil;
+		print_data_of_compared(stdBig2, ftBig2);
+		print_time(stlDiff, ftDiff);
 	}
 
 	std::cout << BOLD_GREEN << "\t____Testing insert2()____" << STANDART << std::endl;
@@ -248,6 +415,41 @@ void	VectorTests(void) {
 		ft2.insert(ft2.end(), ft.begin(), ft.begin() + cut);
 		std2.insert(std2.end(), std.begin(), std.begin() + cut);
 		print_data_of_compared(std2, ft2);
+
+
+		std::cout << YELLOW << "CMP - huge size" << STANDART<< std::endl;
+		std::cout << YELLOW << "vec.insert(vec.begin(), ft.begin(), ft.begin());" << STANDART<< std::endl;
+		struct timeval		stlStart;
+		struct timeval		stlEnd;
+		
+		gettimeofday(&stlStart, NULL);
+		long	stlStartMil = stlStart.tv_sec * 1000 + stlStart.tv_usec / 1000;
+
+		std::vector<int> stdBig(10000000, 3);
+		std::vector<int> stdBig2(30000000);
+
+		stdBig2.insert(stdBig2.end(), stdBig.begin(), stdBig.begin());
+
+		gettimeofday(&stlEnd, NULL);
+
+		long	stlEndMil = stlEnd.tv_sec * 1000 + stlEnd.tv_usec / 1000;
+		long	stlDiff = stlEndMil - stlStartMil;
+
+		struct timeval		ftStart;
+		struct timeval		ftEnd;
+		long				ftStartMil;
+		gettimeofday(&ftStart, NULL);
+		ftStartMil = ftStart.tv_sec * 1000 + ftStart.tv_usec / 1000;
+		ft::vector<int> ftBig(10000000, 3);
+		ft::vector<int> ftBig2(30000000);
+
+		ftBig2.insert(ftBig2.end(), ftBig.begin(), ftBig.begin());
+
+		gettimeofday(&ftEnd, NULL);
+		long	ftEndMil = ftEnd.tv_sec * 1000 + ftEnd.tv_usec / 1000;
+		long	ftDiff = ftEndMil - ftStartMil;
+		print_data_of_compared(stdBig2, ftBig2);
+		print_time(stlDiff, ftDiff);
 	}
 
 	std::cout << BOLD_GREEN << "\t____Testing resize() and resirve()____" << STANDART << std::endl;
@@ -342,52 +544,175 @@ void	VectorTests(void) {
 		ft2.resize(0);
 		std2.resize(0);
 		print_data_of_compared(std, ft);
+
+
+		std::cout << YELLOW << "CMP - time reserving vector" << STANDART<< std::endl;
+		std::cout << YELLOW << "vec.reserve(100000000);" << STANDART<< std::endl;
+		struct timeval		stlStart;
+		struct timeval		stlEnd;
+		
+		gettimeofday(&stlStart, NULL);
+		long	stlStartMil = stlStart.tv_sec * 1000 + stlStart.tv_usec / 1000;
+
+		std.reserve(100000000);
+
+		gettimeofday(&stlEnd, NULL);
+
+		long	stlEndMil = stlEnd.tv_sec * 1000 + stlEnd.tv_usec / 1000;
+		long	stlDiff = stlEndMil - stlStartMil;
+
+		struct timeval		ftStart;
+		struct timeval		ftEnd;
+		long				ftStartMil;
+		gettimeofday(&ftStart, NULL);
+		ftStartMil = ftStart.tv_sec * 1000 + ftStart.tv_usec / 1000;
+
+		ft.reserve(100000000);
+
+		gettimeofday(&ftEnd, NULL);
+		long	ftEndMil = ftEnd.tv_sec * 1000 + ftEnd.tv_usec / 1000;
+		long	ftDiff = ftEndMil - ftStartMil;
+		print_data_of_compared(std, ft);
+		print_time(stlDiff, ftDiff);
 	}
 
+	std::cout << BOLD_GREEN << "\t____Testing assign()____" << STANDART << std::endl;
 	{
-		 std::vector<int> myvector;
+		ft::vector<int> ft_v;
+		ft::vector<int> ft, ft2;
 
-		// set some values (from 1 to 10)
-		for (int i=1; i<=10; i++) myvector.push_back(i);		
-		std::cout << myvector.capacity() <<std::endl;
-		// erase the 6th element
-		myvector.erase (myvector.begin()+5);
-		std::cout << myvector.capacity() <<std::endl;
-		// erase the first 3 elements:
-		myvector.erase (myvector.begin(),myvector.begin()+3);
-		std::cout << myvector.capacity() <<std::endl;
-		std::cout << "myvector contains:";
-		for (unsigned i=0; i<myvector.size(); ++i)
-		  std::cout << ' ' << myvector[i];
-		std::cout << std::endl << myvector.capacity() <<std::endl;
+		std::vector<int> stl_v;
+		std::vector<int> stl, stl2;
 
+		std::vector<int>	stl_vector;
+		ft::vector<int>		ft_vector;
+
+		struct timeval		stlStart;
+		struct timeval		stlEnd;
+		
+		gettimeofday(&stlStart, NULL);
+		long	stlStartMil = stlStart.tv_sec * 1000 + stlStart.tv_usec / 1000;
+
+		stl_vector.assign(3, 3);
+		stl.assign(40000000, 1);
+		stl2.assign(4000, 1);
+		stl_vector.assign(stl.begin(), stl.end());
+		stl_v.push_back(stl_vector[1]);
+		stl_v.push_back(stl_vector.size());
+		stl_vector.assign(stl2.begin(), stl2.end());
+		stl_v.push_back(stl_vector[444]);
+		stl_v.push_back(stl_vector.size());
+
+		gettimeofday(&stlEnd, NULL);
+
+		long	stlEndMil = stlEnd.tv_sec * 1000 + stlEnd.tv_usec / 1000;
+
+		long	stlDiff = stlEndMil - stlStartMil;
+
+		struct timeval		ftStart;
+		struct timeval		ftEnd;
+		long				ftStartMil;
+		gettimeofday(&ftStart, NULL);
+		ftStartMil = ftStart.tv_sec * 1000 + ftStart.tv_usec / 1000;
+
+		ft_vector.assign(3, 3);
+		ft.assign(40000000, 1);
+		ft2.assign(4000, 1);
+		ft_vector.assign(ft.begin(), ft.end());
+		ft_v.push_back(ft_vector[1]);
+		ft_v.push_back(ft_vector.size());
+		ft_vector.assign(ft2.begin(), ft2.end());
+		ft_v.push_back(ft_vector[444]);
+		ft_v.push_back(ft_vector.size());
+
+		gettimeofday(&ftEnd, NULL);
+		long	ftEndMil = ftEnd.tv_sec * 1000 + ftEnd.tv_usec / 1000;
+		long	ftDiff = ftEndMil - ftStartMil;
+
+		print_data_of_compared(stl_v, ft_v);
+		print_time(stlDiff, ftDiff);
 	}
 
-	
-	// std::cout << BOLD_GREEN << "\t____Testing reserv___" << STANDART << std::endl;
-	// {
-	// 	ft::vector<int> vct(7);
+	std::cout << BOLD_GREEN << "\t____Testing erase() range____" << STANDART << std::endl;
+	{
 
-	// 	for (unsigned long int i = 0; i < vct.size(); ++i)
-	// 	{
-	// 		vct.at(i) = (vct.size() - i) * 3;
-	// 		std::cout << "vct.at(): " << vct.at(i) << " | ";
-	// 		std::cout << "vct[]: " << vct[i] << std::endl;
-	// 	}
+		struct timeval		stlStart;
+		struct timeval		stlEnd;
+		gettimeofday(&stlStart, NULL);
+		long	stlStartMil = stlStart.tv_sec * 1000 + stlStart.tv_usec / 1000;
 
-	// 	ft::vector<int> const vct_c(vct);
+		std::vector<int> stl;
+		std::vector<int> stl_v(10000, 6);
+		for (int i = 0; i < 99000000; ++i)
+			stl_v.push_back(i);
+		stl.push_back(*(stl_v.erase(stl_v.begin() + 80000, stl_v.end() - 15000000)));
+		stl.push_back(*(stl_v.begin() + 82000));
+		stl.push_back(stl_v.size());
 
-	// 	std::cout << "front(): " << vct.front() << " " << vct_c.front() << std::endl;
-	// 	std::cout << "back(): " << vct.back() << " " <<  vct_c.back() << std::endl;
+		gettimeofday(&stlEnd, NULL);
+		long	stlEndMil = stlEnd.tv_sec * 1000 + stlEnd.tv_usec / 1000;
+		long	stlDiff = stlEndMil - stlStartMil;
 
-	// 	try {
-	// 		vct.at(10) = 42;
-	// 	}
-	// 	catch (std::out_of_range &e) {
-	// 		std::cout << "Catch out_of_range exception!" << std::endl;
-	// 	}
-	// 	catch (std::exception &e) {
-	// 		std::cout << "Catch exception: " << e.what() << std::endl;
-	// 	}
-	// }
+		struct timeval		ftStart;
+		struct timeval		ftEnd;
+		long				ftStartMil;
+		gettimeofday(&ftStart, NULL);
+		ftStartMil = ftStart.tv_sec * 1000 + ftStart.tv_usec / 1000;
+
+		ft::vector<int> ft;
+		ft::vector<int> ft_v(10000, 6);
+		for (int i = 0; i < 99000000; ++i)
+			ft_v.push_back(i);
+		ft.push_back(*(ft_v.erase(ft_v.begin() + 80000, ft_v.end() - 15000000)));
+		ft.push_back(*(ft_v.begin() + 82000));
+		ft.push_back(ft_v.size());
+
+		gettimeofday(&ftEnd, NULL);
+		long	ftEndMil = ftEnd.tv_sec * 1000 + ftEnd.tv_usec / 1000;
+		long	ftDiff = ftEndMil - ftStartMil;
+
+		print_data_of_compared(stl, ft);
+		print_time(stlDiff, ftDiff);
+	}
+
+	std::cout << BOLD_GREEN << "\t____Testing erase() value____" << STANDART << std::endl;
+	{
+		struct timeval		stlStart;
+		struct timeval		stlEnd;
+		gettimeofday(&stlStart, NULL);
+		long	stlStartMil = stlStart.tv_sec * 1000 + stlStart.tv_usec / 1000;
+
+		std::vector<int> stl;
+		std::vector<int> stl_v;
+		for (int i = 0; i < 99000000; ++i)
+			stl_v.push_back(i);
+		stl.push_back(*(stl_v.erase(stl_v.begin() + 80000)));
+		stl.push_back(*(stl_v.begin() + 82000));
+		stl.push_back(stl_v.size());
+
+		gettimeofday(&stlEnd, NULL);
+		long	stlEndMil = stlEnd.tv_sec * 1000 + stlEnd.tv_usec / 1000;
+		long	stlDiff = stlEndMil - stlStartMil;
+
+		struct timeval		ftStart;
+		struct timeval		ftEnd;
+		long				ftStartMil;
+		gettimeofday(&ftStart, NULL);
+		ftStartMil = ftStart.tv_sec * 1000 + ftStart.tv_usec / 1000;
+
+		ft::vector<int> ft;
+		ft::vector<int> ft_v;
+		for (int i = 0; i < 99000000; ++i)
+			ft_v.push_back(i);
+		ft.push_back(*(ft_v.erase(ft_v.begin() + 80000)));
+		ft.push_back(*(ft_v.begin() + 82000));
+		ft.push_back(ft_v.size());
+
+		gettimeofday(&ftEnd, NULL);
+		long	ftEndMil = ftEnd.tv_sec * 1000 + ftEnd.tv_usec / 1000;
+		long	ftDiff = ftEndMil - ftStartMil;
+
+		print_data_of_compared(stl, ft);
+		print_time(stlDiff, ftDiff);
+	}
 }
