@@ -3,6 +3,7 @@
 
 # include <cstddef>
 # include <iostream>
+# include <memory>
 
 
 class my_nullptr_t {
@@ -17,11 +18,8 @@ private:
 	void	operator&() const;
 };
 
-my_nullptr_t	my_nullptr;
-
 namespace ft
 {
-
 
 	template <typename T>
 	std::string to_string(T n)

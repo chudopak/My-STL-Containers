@@ -2,7 +2,7 @@
 
 int	main(void) {
 
-	std::cout << "Testing Vector" << std::endl;
-	VectorTests();
+	// VectorTests();
+	StackTest();
 	return (0);
 }

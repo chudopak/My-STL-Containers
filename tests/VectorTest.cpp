@@ -1,6 +1,3 @@
-#include "../containers/vector.hpp"
-#include <vector>
-#include <iostream>
 #include "tests.hpp"
 
 
@@ -105,6 +102,10 @@ void	print_data_of_compared(std::vector<T>& stl, std::vector<T>& ft) {
 
 
 void	VectorTests(void) {
+ 
+	std::cout << YELLOW << " \\    /  |---  |/  -----  .oo.  |®®" << std::endl;
+	std::cout << YELLOW << "  \\  /   |--   |\\    |    o  o  |®®" << std::endl;
+	std::cout << YELLOW << "   \\/    |---  | \\   |    .oo.  |\\" << std::endl;
 
 	std::cout << BOLD_GREEN << "\t____Testing empty container____" << STANDART << std::endl;
 	{

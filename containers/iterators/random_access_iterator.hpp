@@ -21,7 +21,7 @@ namespace ft
 		/*
 		** Constructors
 		*/
-		random_access_iterator(void) : _elem(my_nullptr) { }
+		random_access_iterator(void) : _elem(0) { }
 		random_access_iterator(pointer elem) : _elem(elem) { }
 		random_access_iterator(const random_access_iterator& src) : _elem(src._elem) { }
 		virtual ~random_access_iterator(void) { }

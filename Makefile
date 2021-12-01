@@ -1,16 +1,18 @@
 FLAGS		=	-Wall -Wextra -Werror --std=c++98
 
-ITERATORS	=	./containers/iterators/random_access_iterator.hpp \
-				./containers/iterators/reverse_iterator.hpp \
-				./containers/iterators/utils.hpp
+ITERATORS	=	contaiters/iterators/random_access_iterator.hpp \
+				contaiters/iterators/reverse_iterator.hpp \
+				contaiters/iterators/utils.hpp
 
-CONTAINERS	=	./containers/vector.hpp \
-				./containers/headers.hpp
+CONTAINERS	=	containers/vector.hpp \
+				containers/stack.hpp \
+				containers/headers.hpp
 
 INC			=	${ITERATORS} ${CONTAINERS} ./tests/tests.hpp
 
-SRCS		=	./tests/main.cpp \
-				./tests/VectorTest.cpp \
+SRCS		=	tests/main.cpp \
+				tests/VectorTest.cpp \
+				tests/StackTest.cpp
 
 OBJ			=	$(SRCS:.cpp=.o)
 

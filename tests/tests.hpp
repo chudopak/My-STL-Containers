@@ -9,6 +9,14 @@
 # define STANDART "\033[0m"
 # define YELLOW "\033[1;33m"
 
+# include "../containers/vector.hpp"
+# include "../containers/stack.hpp"
+# include <vector>
+# include <stack>
+# include <map>
+
+
 void	VectorTests();
+void	StackTest();
 
 #endif

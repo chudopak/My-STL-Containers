@@ -26,16 +26,16 @@ namespace ft
 		typedef typename allocator_type::size_type						size_type;
 
 		explicit	vector (const allocator_type& alloc = allocator_type()) :
-			_start(my_nullptr),
-			_end(my_nullptr),
-			_capacity(my_nullptr),
+			_start(NULL),
+			_end(NULL),
+			_capacity(NULL),
 			_alloc(alloc)
 		{ }
 
 		explicit	vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) :
-			_start(my_nullptr),
-			_end(my_nullptr),
-			_capacity(my_nullptr),
+			_start(NULL),
+			_end(NULL),
+			_capacity(NULL),
 			_alloc(alloc)
 		{
 			//https://www.cplusplus.com/reference/memory/allocator/allocate/
@@ -55,7 +55,7 @@ namespace ft
 		template <class InputIterator>
 		vector (InputIterator first, InputIterator last,
 				const allocator_type& alloc = allocator_type(),
-				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = my_nullptr) :
+				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL) :
 			_alloc(alloc) 
 		{
 			// Checking is iterator match with those five iteratros tags in utils
@@ -72,9 +72,9 @@ namespace ft
 		}
 
 		vector (const vector& x) :
-			_start(my_nullptr),
-			_end(my_nullptr),
-			_capacity(my_nullptr),
+			_start(NULL),
+			_end(NULL),
+			_capacity(NULL),
 			_alloc(x._alloc)
 		{
 			this->insert(this->begin(), x.begin(), x.end());
@@ -211,7 +211,7 @@ namespace ft
 
 		template <class InputIterator>
 		void			assign(InputIterator first, InputIterator last,
-			typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = my_nullptr) {
+			typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL) {
 
 			resize(static_cast<size_type>(ft::distance(first, last)));
 			for (size_type i = 0; first != last; first++, i++) {
@@ -287,7 +287,7 @@ namespace ft
 				_alloc.construct(newStart + cell_index, val);
 				for (size_type i = 0; i < this->size() - (&(*position) - _start); i++)
 					_alloc.construct(newStart + (&(*position) - _start) + 1 + i, *(&(*position) + i));
-				if (_start != my_nullptr)
+				if (_start != NULL)
 					_alloc.deallocate(_start, this->capacity());
 				_start = newStart;
 				_end = newEnd;
@@ -334,7 +334,7 @@ namespace ft
 					_alloc.construct(newStart + cell_index + i, val);
 				for (size_type i = 0; i < this->size() - cell_index; i++)
 					_alloc.construct(newStart + cell_index + n + i, *(&(*position) + i));
-				if (_start != my_nullptr)
+				if (_start != NULL)
 					_alloc.deallocate(_start, this->capacity());
 				_start = newStart;
 				_end = newEnd;
@@ -344,7 +344,7 @@ namespace ft
 
 		template<class InputIterator>
 		void	insert(iterator position, InputIterator first, InputIterator last,
-				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = my_nullptr) {
+				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL) {
 
 			// if (!ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value)
 			// 	throw (ft::InvalidIteratorException<typename ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::type>());
@@ -380,7 +380,7 @@ namespace ft
 				for (size_type i = 0; i < this->size(); i++)
 					_alloc.destroy(_start + i);
 				
-				if (_start != my_nullptr)
+				if (_start != NULL)
 					_alloc.deallocate(_start, this->capacity());
 				_start = newStart;
 				_end = newEnd;
