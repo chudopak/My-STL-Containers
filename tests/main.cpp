@@ -2,7 +2,8 @@
 
 int	main(void) {
 
+	leaksTest();
 	// VectorTests();
-	StackTest();
+	// StackTest();
 	return (0);
 }

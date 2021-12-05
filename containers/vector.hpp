@@ -77,12 +77,14 @@ namespace ft
 			_capacity(NULL),
 			_alloc(x._alloc)
 		{
-			this->insert(this->begin(), x.begin(), x.end());
+			*this = x;
 		}
 
 		~vector(void) {
-			clear();
-			_alloc.deallocate(_start, capacity());
+			if (_start) {
+				clear();
+				_alloc.deallocate(_start, capacity());
+			}
 		}
 
 		vector	&operator=(const vector& vec) {
@@ -348,11 +350,11 @@ namespace ft
 
 			// if (!ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value)
 			// 	throw (ft::InvalidIteratorException<typename ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::type>());
-
 			size_type	dist = static_cast<size_type>(ft::distance(first, last));
-			if (dist + size() <= capacity()) {
-				for (pointer it = _end; it >= &(*position) ; it--)
+			if (dist + size() < capacity()) {
+				for (pointer it = _end; it >= &(*position) ; it--) {
 					_alloc.construct(it + dist, *it);
+				}
 				_end += dist;
 				for (; first != last; position++, first++)
 					_alloc.construct(&(*position), *first);

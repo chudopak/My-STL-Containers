@@ -14,8 +14,8 @@ namespace ft
 		typedef Container							container_type;
 		typedef typename container_type::size_type	size_type;
 
-		explicit			stack(const container_type& ctnr = container_type()) {
-			this->_ctnr = ctnr;
+		explicit			stack(const container_type& ctnr = container_type()) : _ctnr(ctnr) {
+			// this->_ctnr = ctnr;
 		}
 
 		bool				empty() const {

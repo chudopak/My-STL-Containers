@@ -14,9 +14,11 @@
 # include <vector>
 # include <stack>
 # include <map>
+# include <memory>
 
 
 void	VectorTests();
 void	StackTest();
+void	leaksTest();
 
 #endif

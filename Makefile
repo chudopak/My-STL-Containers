@@ -11,6 +11,7 @@ CONTAINERS	=	containers/vector.hpp \
 INC			=	${ITERATORS} ${CONTAINERS} ./tests/tests.hpp
 
 SRCS		=	tests/main.cpp \
+				tests/leaksTest.cpp \
 				tests/VectorTest.cpp \
 				tests/StackTest.cpp
 
