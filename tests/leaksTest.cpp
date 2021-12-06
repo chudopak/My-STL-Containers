@@ -54,15 +54,20 @@ void	leaksTest() {
 	for (int i = 0; i < v1.size(); i++) {
 		std::cout << *v1[i]->l << std::endl;
 	}
-    try { vv.insert(vv.begin(), v1.begin(), v1.end()); 
-	for (int i = 0; i < vv.size(); i++) {
-		std::cout << *vv[i].l << std::endl;
-	}}
-    catch (...) {
-		// std::cout << "No leaks" << std::endl;
-    	v.push_back(vv.size());
+    try {
+
+		std::cout << vv.size() << std::endl;
+		vv.insert(vv.begin(), v1.begin(), v1.end());
 		std::cout << vv.size() << std::endl;
 
+		for (int i = 0; i < vv.size(); i++) {
+			std::cout << *vv[i].l << std::endl;
+		}
+	}
+    catch (...) {
+		std::cout << "No leaks" << std::endl;
+    	v.push_back(vv.size());
+		std::cout << vv.size() << std::endl;
     }
 	
 

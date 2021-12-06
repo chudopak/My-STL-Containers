@@ -20,5 +20,6 @@
 void	VectorTests();
 void	StackTest();
 void	leaksTest();
+void	UtilsTest();
 
 #endif

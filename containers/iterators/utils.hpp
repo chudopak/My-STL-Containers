@@ -101,7 +101,6 @@ namespace ft
 	template <>
 	struct is_integral_type<unsigned long long int> : public is_integral_res<true, unsigned long long int> {};
 
-
 	/*
 	**	This structure will be used for checking types
 	*/
@@ -225,13 +224,42 @@ namespace ft
 		typedef ft::random_access_iterator_tag			iterator_category;
 	};
 
+	/*
+	** equal
+	*/
+	template <class InputIterator1, class InputIterator2>
+	bool equal(InputIterator1 first1, InputIterator1 last1,
+			InputIterator2 first2)
+	{
+		while (first1 != last1)
+		{
+			if (*first1 != *first2)
+				return (false);
+			++first1;
+			++first2;
+		}
+		return (true);
+	}
 
+	template <class InputIterator1, class InputIterator2, class BinaryPredicate>
+	bool equal(InputIterator1 first1, InputIterator1 last1,
+			InputIterator2 first2, BinaryPredicate pred)
+	{
+		while (first1 != last1)
+		{
+			if (!pred(*first1, *first2))
+				return (false);
+			++first1;
+			++first2;
+		}
+		return (true);
+	}
 
 	/* Lexicographical comparison */
 
-	template <class InputIterator1, class InputIterator2>
-	bool lexicographical_compare (InputIterator1 first1, InputIterator1 last1,
-									InputIterator2 first2, InputIterator2 last2)
+	template <class InputIterator, class InputIterator2>
+	bool lexicographical_compare(InputIterator first1, InputIterator last1,
+								InputIterator2 first2, InputIterator2 last2)
 	{
 		while (first1 != last1)
 		{
@@ -245,10 +273,10 @@ namespace ft
 		return (first2 != last2);
 	}
 
-	template <class InputIterator1, class InputIterator2, class Compare>
-	bool lexicographical_compare (InputIterator1 first1, InputIterator1 last1,
-									InputIterator2 first2, InputIterator2 last2,
-									Compare comp)
+	template <class InputIterator, class InputIterator2, class Compare>
+	bool lexicographical_compare(InputIterator first1, InputIterator last1,
+								InputIterator2 first2, InputIterator2 last2,
+								Compare comp)
 	{
 		while (first1 != last1)
 		{
@@ -260,6 +288,14 @@ namespace ft
 			++first2;
 		}
 		return (first2 != last2);
+	}
+
+	template<typename T>
+	void swap(T &a, T &b)
+	{
+		T c(a);
+		a = b;
+		b = c;
 	}
 
 	/*

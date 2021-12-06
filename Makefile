@@ -13,7 +13,8 @@ INC			=	${ITERATORS} ${CONTAINERS} ./tests/tests.hpp
 SRCS		=	tests/main.cpp \
 				tests/leaksTest.cpp \
 				tests/VectorTest.cpp \
-				tests/StackTest.cpp
+				tests/StackTest.cpp \
+				tests/UtilsTests.cpp
 
 OBJ			=	$(SRCS:.cpp=.o)
 
