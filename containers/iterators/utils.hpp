@@ -160,6 +160,38 @@ namespace ft
 		: public valid_iterator_tag_res<true, ft::output_iterator_tag> { };
 
 
+
+	/**
+	 * @brief Generically, function objects are instances of a class with member function operator() defined.
+	 * This member function allows the object to be used with the same syntax as a regular function call,
+	 * and therefore its type can be used as template parameter when a generic function type is expected.
+	 * 
+	 * binary_function is just a base class, from which specific binary function objects are derived.
+	 * It has no operator() member defined (which derived classes are expected to define) - 
+	 * it simply has three public data members that are typedefs of the template parameters.
+	 * 
+	 * @tparam Arg1 
+	 * @tparam Arg2 
+	 * @tparam Result 
+	 */
+	template <class Arg1, class Arg2, class Result>
+	struct binary_function {
+		typedef Arg1 first_argument_type;
+		typedef Arg2 second_argument_type;
+		typedef Result result_type;
+	};
+
+	/**
+	 * @brief Generically, function objects are instances of a class with member function operator() defined.
+	 * This member function allows the object to be used with the same syntax as a function call.
+	 * 
+	 * @tparam T 
+	 */
+
+	template <class T> struct less : binary_function <T,T,bool> {
+		bool operator() (const T& x, const T& y) const { return x < y; }
+	};
+
 	/*
 	**	EXCEPTION called when iteratror doesn't match with demanded.
 	*/
@@ -313,6 +345,81 @@ namespace ft
 			dst++;
 		}
 		return (dst);
+	}
+
+	/**
+	 * @brief Pair. This class couples together a pair of values, which may be of different types (T1 and T2).
+	 * The individual values can be accessed through its public members first and second.
+	 * 
+	 */
+
+	template <class T1, class T2>
+	struct pair {
+
+	public:
+		typedef T1	first_type;
+		typedef T2	second_type;
+		first_type	first;
+		second_type	second;
+
+		pair() :
+			first(),
+			second()
+		{ }
+
+		template <class U, class V>
+		pair(const pair<U,V>& pr) :
+			first(pr.first),
+			second(pr.second)
+		{ }
+
+		pair(const first_type& a, const second_type& b) :
+			first(a),
+			second(b)
+		{ }
+
+		pair& operator=(const pair& pr) {
+			if (*this == pr)
+				return (*this);
+			first = pr.first;
+			second = pr.second;
+			return (*this);
+		}
+	};
+
+	template <class T1, class T2>
+	bool operator==(const pair<T1,T2>& lhs, const pair<T1,T2>& rhs) {
+		return (lhs.first==rhs.first && lhs.second==rhs.second);
+	}
+
+	template <class T1, class T2>
+	bool operator!=(const pair<T1,T2>& lhs, const pair<T1,T2>& rhs) {
+		return !(lhs==rhs);
+	}
+
+	template <class T1, class T2>
+	bool operator<(const pair<T1,T2>& lhs, const pair<T1,T2>& rhs) {
+		return (lhs.first<rhs.first || (!(rhs.first<lhs.first) && lhs.second<rhs.second));
+	}
+
+	template <class T1, class T2>
+	bool operator<=(const pair<T1,T2>& lhs, const pair<T1,T2>& rhs) {
+		return !(rhs<lhs);
+	}
+
+	template <class T1, class T2>
+	bool operator>(const pair<T1,T2>& lhs, const pair<T1,T2>& rhs) {
+		return (rhs<lhs);
+	}
+
+	template <class T1, class T2>
+	bool operator>=(const pair<T1,T2>& lhs, const pair<T1,T2>& rhs) {
+		return !(lhs<rhs);
+	}
+
+	template <class T1, class T2>
+	ft::pair<T1,T2> make_pair(T1 x, T2 y) {
+		return (ft::pair<T1, T2>(x, y));
 	}
 }
 

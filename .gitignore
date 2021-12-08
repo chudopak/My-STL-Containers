@@ -6,3 +6,4 @@ allTests
 containers/containers_test
 ft_containers-unit-test
 allTests.dSYM/
+tests/test_std/
