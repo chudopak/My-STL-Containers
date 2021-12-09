@@ -11,6 +11,8 @@
 
 # include "../containers/vector.hpp"
 # include "../containers/stack.hpp"
+# include "../containers/map.hpp"
+
 # include <vector>
 # include <stack>
 # include <map>
@@ -21,5 +23,6 @@ void	VectorTests();
 void	StackTest();
 void	leaksTest();
 void	UtilsTest();
+void	MapTest();
 
 #endif

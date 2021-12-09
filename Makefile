@@ -2,7 +2,9 @@ FLAGS		=	-Wall -Wextra -Werror --std=c++98
 
 ITERATORS	=	contaiters/iterators/random_access_iterator.hpp \
 				contaiters/iterators/reverse_iterator.hpp \
-				contaiters/iterators/utils.hpp
+				contaiters/iterators/utils.hpp \
+				containers/iterators/binary_search_tree.hpp \
+				containers/iterators/binary_search_tree_iterator.hpp
 
 CONTAINERS	=	containers/vector.hpp \
 				containers/stack.hpp \
@@ -14,7 +16,8 @@ SRCS		=	tests/main.cpp \
 				tests/leaksTest.cpp \
 				tests/VectorTest.cpp \
 				tests/StackTest.cpp \
-				tests/UtilsTests.cpp
+				tests/UtilsTests.cpp \
+				tests/MapTest.cpp
 
 OBJ			=	$(SRCS:.cpp=.o)
 
