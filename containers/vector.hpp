@@ -58,9 +58,6 @@ namespace ft
 				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL) :
 			_alloc(alloc) 
 		{
-			// Checking is iterator match with those five iteratros tags in utils
-			// if (!ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value)
-			// 	throw (ft::InvalidIteratorException<typename ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::type>());
 			difference_type n = ft::distance(first, last);
 			_start = _alloc.allocate( n );
 			_capacity = _start + n;

@@ -19,8 +19,8 @@ namespace ft {
 
 	template <	class T,
 				class Compare = ft::less<typename T::first_type>,
-				class Node = ft::BST_node<T>,
 				class Alloc = std::allocator<T>,
+				class Node = ft::BST_node<T>,
 				class Node_alloc = std::allocator<Node> 
 				>
 	class BST {
@@ -42,39 +42,124 @@ namespace ft {
 		typedef typename type_allocator::size_type			size_type;
 
 		typedef	ft::BST_iterator<node_type>					iterator;
+		typedef	ft::BST_const_iterator<node_type>			const_iterator;
+
 
 		BST(const key_compare compare = key_compare()) :
 			_compare(compare)
 		{
-			_root = NULL;
-			_start_node = _alloc.allocate(1);
-			_alloc.construct(_start_node, node_type());
-			_end_node = _alloc.allocate(1);
-			_alloc.construct(_end_node, node_type());
-			_start_node->right = _end_node;
-			_end_node->parent = _start_node;
-			_size = 0;
+			this->_root = NULL;
+			_setStartEnd();
+			this->_size = 0;
 		}
 
-		/**
-		 * Don't forget add const versions
-		 */
-		iterator	getBegin() {
+		BST(BST const & bst) {
+			this->_size = 0;
+			this->_root = NULL;
+			_setStartEnd();
+			*this = bst;
+		}
+
+		virtual ~BST()
+		{
+			if (_root) {
+				clearAll();
+			} else {
+				_alloc.destroy(_end_node);
+				_alloc.deallocate(_end_node, 1);
+				_alloc.destroy(_start_node);
+				_alloc.deallocate(_start_node, 1);
+			}
+		}
+
+		BST&		operator=(BST const & bst)
+		{
+			if (this != &bst) {
+				this->clear();
+				this->_alloc = bst._alloc;
+				this->_compare = bst._compare;
+
+				const_iterator	first = bst.getBeginConst();
+				const_iterator	last = bst.getEndConst();
+
+				for (; first != last; first++) {
+					this->insert(*first);
+				}
+			}
+			return (*this);
+		}
+
+		node_pointer	clear(node_pointer node)
+		{
+			if (node)
+			{
+				node->left = clear(node->left);
+				node->right = clear(node->right);
+				_alloc.destroy(node);
+				_alloc.deallocate(node, 1);
+			}
+			return (NULL);
+		}
+
+		void			clearAll() {
+			_root = clear(_root);
+			_end_node = _root;
+			_start_node = _root;
+		}
+
+		void			clear() {
+			if (_size != 0) {
+				clearAll();
+				_setStartEnd();
+				_size = 0;
+			}
+		}
+
+
+		iterator		getBegin() {
 			if (!_root) {
 				return (iterator(_end_node));
 			}
 			return (iterator(_start_node));
 		}
 
-		iterator	getEnd() {
+		const_iterator	getBeginConst() const {
+			if (!_root) {
+				return (const_iterator(_end_node));
+			}
+			return (const_iterator(_start_node));
+		}
+
+		iterator		getEnd() {
 			return (iterator(_end_node));
 		}
 
+		const_iterator	getEndConst() const {
+			return (const_iterator(_end_node));
+		}
 
+		size_type		getSize() const {
+			return (_size);
+		}
 
 		ft::pair<iterator, bool>	insert(const value_type & val) {
 			return (_insert(val, _root));
 		}
+
+		iterator					insertPos(iterator position, const value_type & val) {
+			(void)position;
+			return (_insert(val, _root).first);
+		}
+
+		void						swap(BST & bst) {
+			ft::swap(this->_alloc, bst._alloc);
+			ft::swap(this->_compare, bst._compare);
+			ft::swap(this->_root, bst._root);
+			ft::swap(this->_end_node, bst._end_node);
+			ft::swap(this->_start_node, bst._start_node);
+			ft::swap(this->_size, bst._size);
+		}
+
 
 		/*
 		 * Don't forget to delete
@@ -90,6 +175,15 @@ namespace ft {
 		node_pointer	_start_node;
 		size_type		_size;
 
+		void						_setStartEnd() {
+			_start_node = _alloc.allocate(1);
+			_alloc.construct(_start_node, node_type());
+			_end_node = _alloc.allocate(1);
+			_alloc.construct(_end_node, node_type());
+			_start_node->right = _end_node;
+			_end_node->parent = _start_node;
+		}
+
 		void						_setStartNode(node_pointer node) {
 			if (!_size)
 				return ;
@@ -98,9 +192,18 @@ namespace ft {
 			}
 		}
 
+		ft::pair<iterator, bool>	_rootNullCase(const value_type & val) {
+			_start_node->value = val;
+			_root = _start_node;
+			_size++;
+			return (pair<iterator, bool>(iterator(_start_node), false));
+		}
+
 		ft::pair<iterator, bool>	_insert(const value_type & val, node_pointer node) {
 
 			node_pointer	start_node = NULL;
+			if (!_root)
+				return (_rootNullCase(val));
 			if (_root && !node)
 				node = _root;
 			while (node && node != _end_node) {
@@ -119,13 +222,8 @@ namespace ft {
 				_end_node->parent = tmp;
 				node = tmp;
 			} else {
-				if (!_root) {
-					_start_node->value = val;
-					_root = _start_node;
-				} else {
-					node = _alloc.allocate(1);
-					_alloc.construct(node, node_type(val, start_node));
-				}
+				node = _alloc.allocate(1);
+				_alloc.construct(node, node_type(val, start_node));
 			}
 			if (start_node) {
 				if (_compare(val.first, start_node->value.first)) {

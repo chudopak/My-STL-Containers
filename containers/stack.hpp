@@ -58,7 +58,7 @@ namespace ft
 		template <class T2, class Container2>
 		friend bool operator>= (const ft::stack<T2, Container2>& lhs, const ft::stack<T2, Container2>& rhs);
 
-	private:
+	protected:
 		container_type	_ctnr;
 	};
 

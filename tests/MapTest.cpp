@@ -1,137 +1,305 @@
 #include "tests.hpp"
 
+
+void	print_time_map(long stl, long ft) {
+	std::cout << BOLD_RED << UNDERLINE << "time :" << STANDART;
+	std::cout << "\t\tSTL\t" << "\tFT" << std::endl;
+	std::cout << NORMAL << "\t\t" << stl << "\t\t"<< ft << STANDART<< std::endl;
+}
+
+template <typename T, class U>
+bool	cmp_containers(std::map<T, U>& stl, ft::map<T, U>& ft) {
+
+	if (stl.size() == 0 && ft.size() == 0)
+		return (true);
+	if (stl.size() != ft.size())
+		return (false);
+
+	typename std::map<T, U>::iterator it = stl.begin();
+	typename ft::map<T, U>::iterator ite = ft.begin();
+
+	while (it != stl.end()) {
+		if (it->first != ite->first || it->second != ite->second || ite == ft.end())
+			return (false);
+		it++;
+		ite++;
+	}
+	return (true);
+}
+
+template <typename T, class U>
+void	print_data_of_compared(std::map<T, U>& stl, ft::map<T, U>& ft) {
+
+	std::cout << BOLD_RED << UNDERLINE << "size() :" << STANDART;
+	std::cout << "\tSTL\t" << "\tFT" << std::endl;
+	std::cout << NORMAL << "\t\t" << stl.size() << "\t\t"<< ft.size() << STANDART<< std::endl;
+
+	std::cout << BOLD_RED << UNDERLINE << "compare\t" << STANDART;
+	if (cmp_containers(stl, ft)) {
+		std::cout << "\t\U0001F600\U00002705" << std::endl << std::endl;
+	} else {
+		std::cout << "\t\U0000274C" << std::endl << std::endl;
+	}
+}
+
+
 void	MapTest() {
 
 	{
-		std::cout << "simple iterator test" << std::endl;
+		std::cout << BOLD_GREEN << std::endl << "\tTesting copy constructor" << STANDART << std::endl;
 
-		ft::BST_node<int>										node_one;
-		ft::BST_iterator<ft::BST_node<int> >		it_empty;
-
-
-		ft::BST_iterator<ft::BST_node<int> >		it_one(&node_one);
-		ft::BST_iterator<ft::BST_node<int> >		it_two(it_one);
-
-/* 		it++;
-		it++;
-		if (myMap.begin() == it) {
-			std::cout << "Iterator equal" << std::endl;
-			// std::cout << myMap.end() << std::endl;
-			std::cout << (*it).first << std::endl;
-		} else {
-			std::cout << "Iterator not equal" << std::endl;
-			std::cout << it->first << std::endl;
-		} */
-
-	}
-
-	{
-		ft::BST_node<ft::pair<int, int> >										node_pair;
-		ft::BST_iterator<ft::BST_node<ft::pair<int, int> > >		it_pair(&node_pair);
-
-		node_pair.value.first = 45;
-		std::cout << it_pair->first << std::endl;
-		it_pair++;
-		// ft::BST_node<ft::pair<int, int> >										*come_node = it_pair.getNode();
-		// if (come_node == NULL) {
-		// 	std::cout << "it's NULL" << std::endl;
-		// }
-
-
-	}
-
-	{
-		std::cout << "test insert" << std::endl;
-
-		std::map<int, int> 										myMap;
-
-		myMap.insert(std::make_pair(3, 2));
-		myMap.insert(std::make_pair(4, 2));
-		myMap.insert(std::make_pair(2, 2));
-		myMap.insert(std::make_pair(1, 2));
-
-		myMap.insert(std::make_pair(5, 2));
-		// it = myMap.end();
-		// it--;
-		std::map<int, int>::iterator							it = myMap.begin();
-		while (it != myMap.end()) {
-			std::cout << it->first << std::endl;
-			it++;
+		std::map<int, int> 										stdMap;
+		for (int i = 0; i < 2000; i += 4) {
+			stdMap.insert(std::make_pair(i, i + 1));
+			stdMap.insert(std::make_pair(i - 1, i + 1));
+			stdMap.insert(std::make_pair(-i, -i + 1));
+			stdMap.insert(std::make_pair(-i + 1, -i + 1));
 		}
-		std::cout << "REVERSE" << std::endl;
-
-		while (it != myMap.begin()) {
-			std::cout << it->first << std::endl;
-			it--;
+		ft::map<int, int> 										myMap;
+		for (int i = 0; i < 2000; i += 4) {
+			myMap.insert(ft::make_pair(i, i + 1));
+			myMap.insert(ft::make_pair(i - 1, i + 1));
+			myMap.insert(ft::make_pair(-i, -i + 1));
+			myMap.insert(ft::make_pair(-i + 1, -i + 1));
 		}
-			// std::cout << it->first << std::endl;
+		struct timeval		stlStart;
+		struct timeval		stlEnd;
+		
+		gettimeofday(&stlStart, NULL);
+		long	stlStartMil = stlStart.tv_sec * 1000 + stlStart.tv_usec / 1000;
 
 
+		std::map<int, int> 										stdCopyMap(stdMap);
+
+
+		gettimeofday(&stlEnd, NULL);
+		long	stlEndMil = stlEnd.tv_sec * 1000 + stlEnd.tv_usec / 1000;
+		long	stlDiff = stlEndMil - stlStartMil;
+
+
+		struct timeval		ftStart;
+		struct timeval		ftEnd;
+		gettimeofday(&ftStart, NULL);
+		long	ftStartMil = ftStart.tv_sec * 1000 + ftStart.tv_usec / 1000;
+
+		ft::map<int, int> 										myCopyMap(myMap);
+		
+		gettimeofday(&ftEnd, NULL);
+		long	ftEndMil = ftEnd.tv_sec * 1000 + ftEnd.tv_usec / 1000;
+		long	ftDiff = ftEndMil - ftStartMil;
+		print_data_of_compared(stdCopyMap, myCopyMap);
+		print_time_map(stlDiff, ftDiff);
 	}
 
 	{
-		std::cout << std::endl << "test MY insert" << std::endl;
-		ft::BST_node<ft::pair<int, int> >										node_pair;
-		ft::BST_iterator<ft::BST_node<ft::pair<int, int> > >		it_pair;
-		ft::BST<ft::pair<int, int> >											bst;
-
-		ft::BST_iterator<ft::BST_node<ft::pair<int, int> > >	iter = bst.getBegin();
-		ft::BST_node<ft::pair<int, int> >						*new_node = iter.getNode();
-		ft::BST_node<ft::pair<int, int> >						*node1 = iter.getNode();
+		std::cout << BOLD_GREEN << std::endl << "\tTesting insert(val)" << STANDART << std::endl;
 
 
-		bst.insert(ft::make_pair(14, 2));
-		bst.insert(ft::make_pair(14, 2));
-		bst.insert(ft::make_pair(14, 2));
-		bst.insert(ft::make_pair(14, 2));
+		struct timeval		stlStart;
+		struct timeval		stlEnd;
+		
+		gettimeofday(&stlStart, NULL);
+		long	stlStartMil = stlStart.tv_sec * 1000 + stlStart.tv_usec / 1000;
 
 
-		// iter = bst.getBegin();
-		// std::cout << iter->first << std::endl;
-
-		// std::cout << "ADDED ONE NODE" << std::endl;
-		// iter = bst.getEnd();
-		// new_node = iter.getNode();
-		// new_node = new_node->parent;
-
-		// std::cout << new_node->value.first << new_node->value.second << std::endl;
+		std::map<int, int> 										stdMap;
+		for (int i = 0; i < 10000; i += 4) {
+			stdMap.insert(std::make_pair(i, i + 1));
+			stdMap.insert(std::make_pair(i - 1, i + 1));
+			stdMap.insert(std::make_pair(-i, -i + 1));
+			stdMap.insert(std::make_pair(-i + 1, -i + 1));
+		}
 
 
+		gettimeofday(&stlEnd, NULL);
+		long	stlEndMil = stlEnd.tv_sec * 1000 + stlEnd.tv_usec / 1000;
+		long	stlDiff = stlEndMil - stlStartMil;
 
+
+		struct timeval		ftStart;
+		struct timeval		ftEnd;
+		gettimeofday(&ftStart, NULL);
+		long	ftStartMil = ftStart.tv_sec * 1000 + ftStart.tv_usec / 1000;
+
+
+		ft::map<int, int> 										myMap;
+		for (int i = 0; i < 10000; i += 4) {
+			myMap.insert(ft::make_pair(i, i + 1));
+			myMap.insert(ft::make_pair(i - 1, i + 1));
+			myMap.insert(ft::make_pair(-i, -i + 1));
+			myMap.insert(ft::make_pair(-i + 1, -i + 1));
+		}
 		
 		
-		bst.insert(ft::make_pair(1, 45));
-		iter = bst.getBegin();
-		bst.insert(ft::make_pair(-1, 2));
-		bst.insert(ft::make_pair(-8, 2));
-		bst.insert(ft::make_pair(13, 2));
-		bst.insert(ft::make_pair(15, 2));
-		bst.insert(ft::make_pair(12, 2));
+		gettimeofday(&ftEnd, NULL);
+		long	ftEndMil = ftEnd.tv_sec * 1000 + ftEnd.tv_usec / 1000;
+		long	ftDiff = ftEndMil - ftStartMil;
+		print_data_of_compared(stdMap, myMap);
+		print_time_map(stlDiff, ftDiff);
+	}
 
-		bst.insert(ft::make_pair(5, 2));
+	{
+		std::cout << BOLD_GREEN << std::endl << "\tTesting insert(pointer, val)" << STANDART << std::endl;
 
-		std::cout << "The Other Way" << std::endl;
-		iter = bst.getEnd();
-		new_node = iter.getNode();
-		iter = bst.getBegin();
-		node1 = iter.getNode();
-		node1 = node1->right;
-		if (node1 == new_node)
-			std::cout << "They EQ" << std::endl;
-		iter = bst.getBegin();
-		while (iter != bst.getEnd()) {
-			std::cout << iter->first << std::endl;
-			iter++;
+
+		struct timeval		stlStart;
+		struct timeval		stlEnd;
+		
+		gettimeofday(&stlStart, NULL);
+		long	stlStartMil = stlStart.tv_sec * 1000 + stlStart.tv_usec / 1000;
+
+
+		std::map<int, int> 										stdMap;
+		std::map<int, int>::iterator							ite = stdMap.begin();
+
+		for (int i = 0; i < 5000; i += 4) {
+			stdMap.insert(ite, std::make_pair(i, i + 1));
+			stdMap.insert(ite, std::make_pair(i - 1, i + 1));
+			stdMap.insert(ite, std::make_pair(-i, -i + 1));
+			stdMap.insert(ite, std::make_pair(-i + 1, -i + 1));
 		}
-		std::cout << std::endl << " NEW ERA" << std::endl;
 
-		while (iter != bst.getBegin()) {
-			std::cout << iter->first << " " << iter->second << std::endl;
-			iter--;
+
+		gettimeofday(&stlEnd, NULL);
+		long	stlEndMil = stlEnd.tv_sec * 1000 + stlEnd.tv_usec / 1000;
+		long	stlDiff = stlEndMil - stlStartMil;
+
+		struct timeval		ftStart;
+		struct timeval		ftEnd;
+		gettimeofday(&ftStart, NULL);
+		long	ftStartMil = ftStart.tv_sec * 1000 + ftStart.tv_usec / 1000;
+
+
+		ft::map<int, int> 										myMap;
+		ft::map<int, int>::iterator								it = myMap.begin();
+		for (int i = 0; i < 5000; i += 4) {
+			myMap.insert(it, ft::make_pair(i, i + 1));
+			myMap.insert(it, ft::make_pair(i - 1, i + 1));
+			myMap.insert(it, ft::make_pair(-i, -i + 1));
+			myMap.insert(it, ft::make_pair(-i + 1, -i + 1));
 		}
-			// std::cout << iter->first << " " << iter->second << std::endl;
+
+		
+		gettimeofday(&ftEnd, NULL);
+		long	ftEndMil = ftEnd.tv_sec * 1000 + ftEnd.tv_usec / 1000;
+		long	ftDiff = ftEndMil - ftStartMil;
+		print_data_of_compared(stdMap, myMap);
+		print_time_map(stlDiff, ftDiff);
+	}
+
+	{
+		std::cout << std::endl << BOLD_GREEN << "\tTesting insert(InputIterator, InputItator)" << STANDART << std::endl;
+
+		struct timeval		stlStart;
+		struct timeval		stlEnd;
+		
+		gettimeofday(&stlStart, NULL);
+		long	stlStartMil = stlStart.tv_sec * 1000 + stlStart.tv_usec / 1000;
+
+
+		std::map<int, int> 										stdCopyMap;
+		for (int i = 0; i < 5000; i += 4) {
+			stdCopyMap.insert(std::make_pair(i, i + 1));
+			stdCopyMap.insert(std::make_pair(i - 1, i + 1));
+			stdCopyMap.insert(std::make_pair(-i, -i + 1));
+			stdCopyMap.insert(std::make_pair(-i + 1, -i + 1));
+		}
+		std::map<int, int>::iterator							ite_start = stdCopyMap.begin();
+		std::map<int, int>::iterator							ite_end = stdCopyMap.end();
+		std::map<int, int> 										stdMap;
+		stdMap.insert(ite_start, ite_end);
+
+
+		gettimeofday(&stlEnd, NULL);
+		long	stlEndMil = stlEnd.tv_sec * 1000 + stlEnd.tv_usec / 1000;
+		long	stlDiff = stlEndMil - stlStartMil;
+
+
+		struct timeval		ftStart;
+		struct timeval		ftEnd;
+		gettimeofday(&ftStart, NULL);
+		long	ftStartMil = ftStart.tv_sec * 1000 + ftStart.tv_usec / 1000;
+
+
+		ft::map<int, int> 										myCopyMap;
+		for (int i = 0; i < 5000; i += 4) {
+			myCopyMap.insert(ft::make_pair(i, i + 1));
+			myCopyMap.insert(ft::make_pair(i - 1, i + 1));
+			myCopyMap.insert(ft::make_pair(-i, -i + 1));
+			myCopyMap.insert(ft::make_pair(-i + 1, -i + 1));
+		}
+		ft::map<int, int>::iterator							it_start = myCopyMap.begin();
+		ft::map<int, int>::iterator							it_end = myCopyMap.end();
+		ft::map<int, int> 									myMap;
+		myMap.insert(it_start, it_end);
+		
+		
+		gettimeofday(&ftEnd, NULL);
+		long	ftEndMil = ftEnd.tv_sec * 1000 + ftEnd.tv_usec / 1000;
+		long	ftDiff = ftEndMil - ftStartMil;
+		print_data_of_compared(stdMap, myMap);
+		print_time_map(stlDiff, ftDiff);
 
 
 
+		std::cout << std::endl << BOLD_GREEN << "\tTesting swap(x)" << STANDART << std::endl;
+
+		myCopyMap.clear();
+		stdCopyMap.clear();
+
+		for (int i = 0; i < 300; i += 8) {
+			myCopyMap.insert(ft::make_pair(i, i + 1));
+			myCopyMap.insert(ft::make_pair(i - 1, i + 1));
+			myCopyMap.insert(ft::make_pair(-i, -i + 1));
+			myCopyMap.insert(ft::make_pair(-i + 1, -i + 1));
+		}
+		for (int i = 0; i < 300; i += 8) {
+			stdCopyMap.insert(std::make_pair(i, i + 1));
+			stdCopyMap.insert(std::make_pair(i - 1, i + 1));
+			stdCopyMap.insert(std::make_pair(-i, -i + 1));
+			stdCopyMap.insert(std::make_pair(-i + 1, -i + 1));
+		}
+		myMap.swap(myCopyMap);
+		stdMap.swap(stdCopyMap);
+		print_data_of_compared(stdMap, myMap);
+	}
+
+	{
+		std::cout << std::endl << BOLD_GREEN << "\tTesting clear()" << STANDART << std::endl;
+
+		std::map<int, int> 										stdMap;
+		for (int i = 0; i < 10000; i += 4) {
+			stdMap.insert(std::make_pair(i, i + 1));
+			stdMap.insert(std::make_pair(i - 1, i + 1));
+			stdMap.insert(std::make_pair(-i, -i + 1));
+			stdMap.insert(std::make_pair(-i + 1, -i + 1));
+		}
+		ft::map<int, int> 										myMap;
+		for (int i = 0; i < 10000; i += 4) {
+			myMap.insert(ft::make_pair(i, i + 1));
+			myMap.insert(ft::make_pair(i - 1, i + 1));
+			myMap.insert(ft::make_pair(-i, -i + 1));
+			myMap.insert(ft::make_pair(-i + 1, -i + 1));
+		}
+		ft::map<int, int> 										myMapsi;
+
+		stdMap.clear();
+		myMap.clear();
+
+		for (int i = 0; i < 10000; i += 4) {
+			myMap.insert(ft::make_pair(i, i + 1));
+			myMap.insert(ft::make_pair(i - 1, i + 1));
+			myMap.insert(ft::make_pair(-i, -i + 1));
+			myMap.insert(ft::make_pair(-i + 1, -i + 1));
+		}
+		for (int i = 0; i < 10000; i += 4) {
+			stdMap.insert(std::make_pair(i, i + 1));
+			stdMap.insert(std::make_pair(i - 1, i + 1));
+			stdMap.insert(std::make_pair(-i, -i + 1));
+			stdMap.insert(std::make_pair(-i + 1, -i + 1));
+		}
+		stdMap.clear();
+		myMap.clear();
+		print_data_of_compared(stdMap, myMap);
 	}
 }
