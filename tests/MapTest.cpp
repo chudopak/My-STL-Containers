@@ -142,14 +142,16 @@ void	MapTest() {
 		std::cout << BOLD_GREEN << std::endl << "\tTesting copy constructor" << STANDART << std::endl;
 
 		std::map<int, int> 										stdMap;
-		for (int i = 0; i < 10000; i += 4) {
+		for (int i = 0; i < 20000; i += 4) {
 			stdMap.insert(std::make_pair(i, i + 1));
 			stdMap.insert(std::make_pair(i - 1, i + 1));
 			stdMap.insert(std::make_pair(-i, -i + 1));
 			stdMap.insert(std::make_pair(-i + 1, -i + 1));
 		}
+		
+
 		ft::map<int, int> 										myMap;
-		for (int i = 0; i < 10000; i += 4) {
+		for (int i = 0; i < 20000; i += 4) {
 			myMap.insert(ft::make_pair(i, i + 1));
 			myMap.insert(ft::make_pair(i - 1, i + 1));
 			myMap.insert(ft::make_pair(-i, -i + 1));
@@ -444,5 +446,80 @@ void	MapTest() {
 
 			print_data_of_compared_vec(stdv, ftv);
 		}
+	}
+	{
+		std::cout << std::endl << BOLD_GREEN << "\tTEST rbegin() rend()" << STANDART << std::endl;
+
+		struct timeval		stlStart;
+		struct timeval		stlEnd;
+		
+		gettimeofday(&stlStart, NULL);
+		long	stlStartMil = stlStart.tv_sec * 1000 + stlStart.tv_usec / 1000;
+
+		std::vector<int>	v;
+		std::map<int, int>	mp;
+
+		mp.insert(std::make_pair(5, 5));
+		mp.insert(std::make_pair(3, 3));
+		mp.insert(std::make_pair(7, 7));
+		std::map<int, int>::reverse_iterator rit = mp.rbegin();
+		std::map<int, int>::reverse_iterator rit2 = mp.rend();
+		v.push_back(rit->first);
+		rit++;
+		rit2--;
+		v.push_back(rit->first);
+		v.push_back(rit2->first);
+		rit++;
+		v.push_back(*rit == *rit2);
+		rit2--;
+		v.push_back(rit->first);
+		v.push_back(rit2->first);
+		v.push_back(*rit2 > *rit);
+		v.push_back(*rit2 < *rit);
+		v.push_back((--rit)->first);
+		v.push_back((++rit2)->first);
+		v.push_back((rit--)->first);
+		v.push_back((rit2++)->first);
+
+		gettimeofday(&stlEnd, NULL);
+		long	stlEndMil = stlEnd.tv_sec * 1000 + stlEnd.tv_usec / 1000;
+		long	stlDiff = stlEndMil - stlStartMil;
+
+
+		struct timeval		ftStart;
+		struct timeval		ftEnd;
+		gettimeofday(&ftStart, NULL);
+		long	ftStartMil = ftStart.tv_sec * 1000 + ftStart.tv_usec / 1000;
+
+		std::vector<int> ftvec;
+		ft::map<int, int>	ftmp;
+
+		ftmp.insert(ft::make_pair(5, 5));
+		ftmp.insert(ft::make_pair(3, 3));
+		ftmp.insert(ft::make_pair(7, 7));
+		ft::map<int, int>::reverse_iterator ftrit = ftmp.rbegin();
+		ft::map<int, int>::reverse_iterator ftrit2 = ftmp.rend();
+		ftvec.push_back(ftrit->first);
+		ftrit++;
+		ftrit2--;
+		ftvec.push_back(ftrit->first);
+		ftvec.push_back(ftrit2->first);
+		ftrit++;
+		ftvec.push_back(*ftrit == *ftrit2);
+		ftrit2--;
+		ftvec.push_back(ftrit->first);
+		ftvec.push_back(ftrit2->first);
+		ftvec.push_back(*ftrit2 > *ftrit);
+		ftvec.push_back(*ftrit2 < *ftrit);
+		ftvec.push_back((--ftrit)->first);
+		ftvec.push_back((++ftrit2)->first);
+		ftvec.push_back((ftrit--)->first);
+		ftvec.push_back((ftrit2++)->first);
+
+		gettimeofday(&ftEnd, NULL);
+		long	ftEndMil = ftEnd.tv_sec * 1000 + ftEnd.tv_usec / 1000;
+		long	ftDiff = ftEndMil - ftStartMil;
+		print_data_of_compared_vec(v, ftvec);
+		print_time_map(stlDiff, ftDiff);
 	}
 }

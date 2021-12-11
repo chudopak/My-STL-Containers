@@ -87,20 +87,6 @@ namespace ft {
 			return (*this);
 		}
 
-		node_pointer	_findNodeToDelete(node_pointer node) {
-			if (!node) {
-				return (NULL);
-			}
-			while (node->left || node->right) {
-				if (node->left) {
-					node = node->left;
-				} else {
-					node = node->right;
-				}
-			}
-			return (node);
-		}
-
 		node_pointer	clear(node_pointer node)
 		{
 			if (!_root)
@@ -146,16 +132,10 @@ namespace ft {
 
 
 		iterator		getBegin() {
-			if (!_root) {
-				return (iterator(_end_node));
-			}
 			return (iterator(_start_node));
 		}
 
 		const_iterator	getBeginConst() const {
-			if (!_root) {
-				return (const_iterator(_end_node));
-			}
 			return (const_iterator(_start_node));
 		}
 
@@ -189,13 +169,55 @@ namespace ft {
 			ft::swap(this->_size, bst._size);
 		}
 
+		iterator lower_bound(const key_type &value) {
 
-		/*
-		 * Don't forget to delete
-		 */
-		iterator	getRoot() {
-			return (iterator(_root));
+			iterator it = getBegin();
+			iterator ite = getEnd();
+			while (it != ite) {
+				if (!_compare(it->first, value))
+					break;
+				it++;
+			}
+			return (it);
 		}
+
+		const_iterator lower_bound(const key_type &value) const {
+
+			const_iterator it = getBeginConst();
+			const_iterator ite = getEndConst();
+			while (it != ite) {
+				if (!_compare(it->first, value))
+					break;
+				it++;
+			}
+			return (it);
+		}
+
+		iterator upper_bound(const key_type &value) {
+
+			iterator it = getBegin();
+			iterator ite = getEnd();
+			while (it != ite) {
+				if (_compare(value, it->first))
+					break;
+				it++;
+			}
+			return (it);
+		}
+
+		const_iterator upper_bound(const key_type &value) const {
+
+			const_iterator it = getBeginConst();
+			const_iterator ite = getEndConst();
+			while (it != ite) {
+				if (_compare(value, it->first))
+					break;
+				it++;
+			}
+			return (it);
+		}
+
+
 	private:
 		node_allocator	_alloc;
 		key_compare		_compare;
@@ -276,6 +298,20 @@ namespace ft {
 			_setStartNode(node);
 			_size++;
 			return (pair<iterator, bool>(iterator(node), true));
+		}
+
+		node_pointer	_findNodeToDelete(node_pointer node) {
+			if (!node) {
+				return (NULL);
+			}
+			while (node->left || node->right) {
+				if (node->left) {
+					node = node->left;
+				} else {
+					node = node->right;
+				}
+			}
+			return (node);
 		}
 	};
 }

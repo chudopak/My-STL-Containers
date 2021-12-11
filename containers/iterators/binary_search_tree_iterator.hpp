@@ -37,17 +37,13 @@ namespace ft {
 			if (*this == it)
 				return (*this);
 			this->_node = it._node;
-			// this->_compare = it._compare;
+			// std::cout << "WE In assingment" << std::endl;
 			return (*this);
 		}
 
-		bool			operator==(BST_iterator const & it) const {
-			return (_node == it._node);
-		}
-
-		bool			operator!=(BST_iterator const & it) const {
-			return (_node != it._node);
-		}
+		bool			operator==(BST_iterator const & it) const { return (_node == it._node); }
+		node_pointer	getNode() const { return (_node); }
+		bool			operator!=(BST_iterator const & it) const { return (_node != it._node); }
 
 		reference		operator*() const {
 			return (this->_node->value);
@@ -106,11 +102,6 @@ namespace ft {
 			return (tmp);
 		}
 
-		/*
-		 * Don't forget to delete
-		 */
-		node_pointer	getNode() const { return (_node); }
-
 	private:
 		node_pointer	_node;
 	};
@@ -140,7 +131,7 @@ namespace ft {
 		}
 
 		BST_const_iterator(const BST_iterator<Node> & it) :
-			_node(it._node)
+			_node(it.getNode())
 		{ }
 
 		virtual ~BST_const_iterator() { }
@@ -153,13 +144,9 @@ namespace ft {
 			return (*this);
 		}
 
-		bool			operator==(BST_const_iterator const & it) const {
-			return (_node == it._node);
-		}
-
-		bool			operator!=(BST_const_iterator const & it) const {
-			return (_node != it._node);
-		}
+		bool			operator==(BST_const_iterator const & it) const { return (_node == it._node);}
+		node_pointer	getNode() const { return (_node); }
+		bool			operator!=(BST_const_iterator const & it) const { return (_node != it._node);}
 
 		reference		operator*() const {
 			return (this->_node->value);
@@ -217,11 +204,6 @@ namespace ft {
 			operator--();
 			return (tmp);
 		}
-
-		/*
-		 * Don't forget to delete
-		 */
-		node_pointer	getNode() const { return (_node); }
 
 	private:
 		node_pointer	_node;
