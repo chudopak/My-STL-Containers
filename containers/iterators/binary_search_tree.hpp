@@ -67,8 +67,6 @@ namespace ft {
 			} else {
 				_alloc.destroy(_end_node);
 				_alloc.deallocate(_end_node, 1);
-				_alloc.destroy(_start_node);
-				_alloc.deallocate(_start_node, 1);
 			}
 		}
 
@@ -89,14 +87,45 @@ namespace ft {
 			return (*this);
 		}
 
+		node_pointer	_findNodeToDelete(node_pointer node) {
+			if (!node) {
+				return (NULL);
+			}
+			while (node->left || node->right) {
+				if (node->left) {
+					node = node->left;
+				} else {
+					node = node->right;
+				}
+			}
+			return (node);
+		}
+
 		node_pointer	clear(node_pointer node)
 		{
-			if (node)
-			{
-				node->left = clear(node->left);
-				node->right = clear(node->right);
-				_alloc.destroy(node);
-				_alloc.deallocate(node, 1);
+			if (!_root)
+				return (NULL);
+			node_pointer	deleteNode;
+			node = _start_node;
+			while (_size > 0) {
+				deleteNode = _findNodeToDelete(node);
+				if (!deleteNode) {
+					node = _root;
+					continue ;
+				}
+				node = deleteNode->parent;
+				if (node->left == deleteNode) {
+					node->left = NULL;
+				} else {
+					node->right = NULL;
+				}
+				_alloc.destroy(deleteNode);
+				_alloc.deallocate(deleteNode, 1);
+				_size--;
+			}
+			if (_root) {
+				_alloc.destroy(_root);
+				_alloc.deallocate(_root, 1);
 			}
 			return (NULL);
 		}
@@ -176,38 +205,50 @@ namespace ft {
 		size_type		_size;
 
 		void						_setStartEnd() {
-			_start_node = _alloc.allocate(1);
-			_alloc.construct(_start_node, node_type());
 			_end_node = _alloc.allocate(1);
 			_alloc.construct(_end_node, node_type());
-			_start_node->right = _end_node;
-			_end_node->parent = _start_node;
+			_start_node = _end_node;
 		}
 
 		void						_setStartNode(node_pointer node) {
-			if (!_size)
-				return ;
 			if (_start_node == NULL || _compare(node->value.first, _start_node->value.first)) {
 				_start_node = node;
 			}
 		}
 
 		ft::pair<iterator, bool>	_rootNullCase(const value_type & val) {
-			_start_node->value = val;
+			_start_node = _alloc.allocate(1);
+			_alloc.construct(_start_node, node_type(val, NULL, NULL, _end_node));
+			_end_node->parent = _start_node;
 			_root = _start_node;
 			_size++;
-			return (pair<iterator, bool>(iterator(_start_node), false));
+			return (pair<iterator, bool>(iterator(_start_node), true));
+		}
+
+		node_pointer				_preSetNode(const value_type & val, node_pointer node) {
+			if (_compare(val.first, _start_node->value.first)
+				|| (!_compare(val.first, _start_node->value.first) && !_compare(_start_node->value.first, val.first))) {
+				node = _start_node;
+			}
+			else if (_compare(_end_node->parent->value.first, val.first)
+				|| (!_compare(val.first, _end_node->parent->value.first) && !_compare(_end_node->parent->value.first, val.first))) {
+				node = _end_node->parent;
+
+			} 
+			else if (_root && !node) {
+				node = _root;
+			}
+			return (node);
 		}
 
 		ft::pair<iterator, bool>	_insert(const value_type & val, node_pointer node) {
 
-			node_pointer	start_node = NULL;
+			node_pointer	parent = NULL;
 			if (!_root)
 				return (_rootNullCase(val));
-			if (_root && !node)
-				node = _root;
+			node = _preSetNode(val, node);
 			while (node && node != _end_node) {
-				start_node = node;
+				parent = node;
 				if (_compare(val.first, node->value.first)) {
 					node = node->left;
 				} else if (_compare(node->value.first, val.first)) {
@@ -218,18 +259,18 @@ namespace ft {
 			}
 			if (node == _end_node) {
 				node_pointer	tmp = _alloc.allocate(1);
-				_alloc.construct(tmp, node_type(val, start_node, NULL, _end_node));
+				_alloc.construct(tmp, node_type(val, parent, NULL, _end_node));
 				_end_node->parent = tmp;
 				node = tmp;
 			} else {
 				node = _alloc.allocate(1);
-				_alloc.construct(node, node_type(val, start_node));
+				_alloc.construct(node, node_type(val, parent));
 			}
-			if (start_node) {
-				if (_compare(val.first, start_node->value.first)) {
-					start_node->left = node;
+			if (parent) {
+				if (_compare(val.first, parent->value.first)) {
+					parent->left = node;
 				} else {
-					start_node->right = node;
+					parent->right = node;
 				}
 			}
 			_setStartNode(node);

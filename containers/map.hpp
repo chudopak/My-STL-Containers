@@ -15,7 +15,7 @@ namespace ft {
 	public:
 		typedef Key												key_type;
 		typedef T												mapped_type;
-		typedef ft::pair<key_type, mapped_type>					value_type;
+		typedef ft::pair<const key_type, mapped_type>					value_type;
 		typedef Compare											key_compare;
 
 		class value_compare : ft::binary_function<value_type, value_type, bool>
@@ -50,10 +50,30 @@ namespace ft {
 		/**
 		 * Constructors
 		 */
-		explicit map(const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()) :
+		explicit map(	const key_compare& comp = key_compare(),
+						const allocator_type& alloc = allocator_type()) :
 			_bst(comp),
+			_compare(comp),
 			_alloc(alloc)
 		{ }
+
+		/**
+		 * @brief ft::enable_if is used for hide this constructor
+		 * if InputIterator has standart type because Int cant be iteratable
+		 * 
+		 */
+		template <class InputIterator>
+		map (	InputIterator first,
+				InputIterator last,
+				const key_compare & comp = key_compare(),
+				const allocator_type & alloc = allocator_type(),
+				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL) :
+			_bst(comp),
+			_compare(comp),
+			_alloc(alloc)
+		{
+			this->insert(first, last);
+		}
 
 		map (const map& x) : 
 			_bst(x._bst),
