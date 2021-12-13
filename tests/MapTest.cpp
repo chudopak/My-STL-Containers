@@ -48,8 +48,14 @@ void	print_data_of_compared_vec(std::vector<T>& stl, std::vector<T>& ft) {
 
 template <typename T, class U>
 void	print_ft_map(ft::map<T, U>& ft) {
-	for (typename ft::map<T, U>::iterator it = ft.begin() ; it != ft.end(); ++it)
+	// int		iterations = 0;
+	for (typename ft::map<T, U>::iterator it = ft.begin() ; it != ft.end(); ++it) {
 		std::cout << ' ' << it->first;
+	// std::cout << "LOOP" << std::endl;
+		// if (iterations > 30)
+			// break;
+		// iterations++;
+	}
 	std::cout << '\n';
 }
 
@@ -521,5 +527,245 @@ void	MapTest() {
 		long	ftDiff = ftEndMil - ftStartMil;
 		print_data_of_compared_vec(v, ftvec);
 		print_time_map(stlDiff, ftDiff);
+	}
+
+	{
+		std::cout << std::endl << BOLD_GREEN << "\tTEST find() count()" << STANDART << std::endl;
+
+		struct timeval		stlStart;
+		struct timeval		stlEnd;
+		
+		gettimeofday(&stlStart, NULL);
+		long	stlStartMil = stlStart.tv_sec * 1000 + stlStart.tv_usec / 1000;
+
+		std::vector<int>	stdvec;
+		std::map<int, int>	stdmp;
+
+		for (int i = 0, j = 0; i < 30000; i += 2, ++j) {
+			stdmp.insert(std::make_pair(-i, j));
+			stdmp.insert(std::make_pair(i, j));
+			stdmp.insert(std::make_pair(i + 1, j));
+		}
+		std::map<int, int>::iterator it = stdmp.find(29000);
+		stdvec.push_back(it->first);
+		stdvec.push_back(it->second);
+		it = stdmp.find(-29000);
+		stdvec.push_back(it->first);
+		stdvec.push_back(it->second);
+		it = stdmp.find(-234523542);
+		if (it == stdmp.end())
+			stdvec.push_back(1);
+
+		gettimeofday(&stlEnd, NULL);
+		long	stlEndMil = stlEnd.tv_sec * 1000 + stlEnd.tv_usec / 1000;
+		long	stlDiff = stlEndMil - stlStartMil;
+
+		struct timeval		ftStart;
+		struct timeval		ftEnd;
+		gettimeofday(&ftStart, NULL);
+		long	ftStartMil = ftStart.tv_sec * 1000 + ftStart.tv_usec / 1000;
+
+		std::vector<int>	ftvec;
+		ft::map<int, int>	mp;
+
+		for (int i = 0, j = 0; i < 30000; i += 2, ++j) {
+			mp.insert(ft::make_pair(-i, j));
+			mp.insert(ft::make_pair(i, j));
+			mp.insert(ft::make_pair(i + 1, j));
+		}
+		ft::map<int, int>::iterator ftit = mp.find(29000);
+		ftvec.push_back(ftit->first);
+		ftvec.push_back(ftit->second);
+		ftit = mp.find(-29000);
+		ftvec.push_back(ftit->first);
+		ftvec.push_back(ftit->second);
+		ftit = mp.find(-234523542);
+		if (ftit == mp.end())
+			ftvec.push_back(1);
+			
+		gettimeofday(&ftEnd, NULL);
+		long	ftEndMil = ftEnd.tv_sec * 1000 + ftEnd.tv_usec / 1000;
+		long	ftDiff = ftEndMil - ftStartMil;
+		print_data_of_compared_vec(stdvec, ftvec);
+		print_time_map(stlDiff, ftDiff);
+	}
+	{
+		std::cout << std::endl << BOLD_GREEN << "\tTEST erase()" << STANDART << std::endl;
+		std::cout << YELLOW << "\ttesting time erase()" << STANDART << std::endl;
+
+		struct timeval		stlStart;
+		struct timeval		stlEnd;
+		
+		gettimeofday(&stlStart, NULL);
+		long	stlStartMil = stlStart.tv_sec * 1000 + stlStart.tv_usec / 1000;
+
+		std::vector<int>	stdvec;
+		std::map<int, int>	stdmp;
+		stdvec.push_back(stdmp.erase(3));
+		for (int i = 0, j = 0; i < 500000 ; ++i, ++j)
+			stdmp.insert(std::make_pair(i, j));
+		std::map<int, int>::iterator stdit = stdmp.begin();
+		stdvec.push_back(stdmp.erase(0));
+		stdvec.push_back(stdmp.size());
+		stdvec.push_back(stdit->first);
+		stdvec.push_back(stdmp.erase(-1));
+		stdvec.push_back(stdmp.size());
+		stdit = stdmp.begin();
+		stdvec.push_back(stdit->first);
+		std::map<int, int>::iterator stdit4 = stdmp.begin();
+		for (; stdit4 != stdmp.end(); stdit4 = stdmp.begin())
+				stdmp.erase(stdit4->first);
+		std::map<int, int>::iterator stdit2 = stdmp.end();
+		stdit2--;
+		stdvec.push_back(stdmp.erase(400000));
+		stdvec.push_back(stdmp.size());
+		std::map<int, int> stdmp2;
+		for (int i = 0, j = 0; i < 10 ; ++i, ++j)
+				stdmp2.insert(std::make_pair(i, j));
+		stdmp2.erase(2);
+		stdmp2.erase(7);
+		std::map<int, int>::iterator stdit3 = stdmp2.begin();
+		for (; stdit3 != stdmp2.end(); ++stdit3) {
+			stdvec.push_back(stdit3->first);
+			stdvec.push_back(stdit3->second);
+		}
+
+		gettimeofday(&stlEnd, NULL);
+		long	stlEndMil = stlEnd.tv_sec * 1000 + stlEnd.tv_usec / 1000;
+		long	stlDiff = stlEndMil - stlStartMil;
+
+		struct timeval		ftStart;
+		struct timeval		ftEnd;
+		gettimeofday(&ftStart, NULL);
+		long	ftStartMil = ftStart.tv_sec * 1000 + ftStart.tv_usec / 1000;
+
+		std::vector<int>	ftvec;
+		ft::map<int, int>	ftmp;
+		ftvec.push_back(ftmp.erase(3));
+		for (int i = 0, j = 0; i < 500000 ; ++i, ++j)
+			ftmp.insert(ft::make_pair(i, j));
+		ft::map<int, int>::iterator ftit = ftmp.begin();
+		ftvec.push_back(ftmp.erase(0));
+		ftvec.push_back(ftmp.size());
+		ftvec.push_back(ftit->first);
+		ftvec.push_back(ftmp.erase(-1));
+		ftvec.push_back(ftmp.size());
+		ftit = ftmp.begin();
+		ftvec.push_back(ftit->first);
+		ft::map<int, int>::iterator ftit4 = ftmp.begin();
+		for (; ftit4 != ftmp.end(); ftit4 = ftmp.begin())
+				ftmp.erase(ftit4->first);
+		ft::map<int, int>::iterator ftit2 = ftmp.end();
+		ftit2--;
+		ftvec.push_back(ftmp.erase(400000));
+		ftvec.push_back(ftmp.size());
+		ft::map<int, int> ftmp2;
+		for (int i = 0, j = 0; i < 10 ; ++i, ++j)
+				ftmp2.insert(ft::make_pair(i, j));
+		ftmp2.erase(2);
+		ftmp2.erase(7);
+		ft::map<int, int>::iterator ftit3 = ftmp2.begin();
+		for (; ftit3 != ftmp2.end(); ++ftit3) {
+			ftvec.push_back(ftit3->first);
+			ftvec.push_back(ftit3->second);
+		}
+
+		gettimeofday(&ftEnd, NULL);
+		long	ftEndMil = ftEnd.tv_sec * 1000 + ftEnd.tv_usec / 1000;
+		long	ftDiff = ftEndMil - ftStartMil;
+		print_data_of_compared_vec(stdvec, ftvec);
+		print_time_map(stlDiff, ftDiff);
+
+		std::cout << std::endl << YELLOW << "\ttesting triky erase()" << STANDART << std::endl;
+
+		ft::map<int, int>	ftTree;
+		ftTree.insert(ft::make_pair(15, 0));
+		ftTree.insert(ft::make_pair(10, 0));
+		ftTree.insert(ft::make_pair(1, 0));
+		ftTree.insert(ft::make_pair(12, 0));
+		ftTree.insert(ft::make_pair(30, 0));
+		ftTree.insert(ft::make_pair(22, 0));
+		ftTree.insert(ft::make_pair(25, 0));
+		ftTree.insert(ft::make_pair(20, 0));
+		ftTree.insert(ft::make_pair(40, 0));
+		ftTree.insert(ft::make_pair(33, 0));
+		ftTree.insert(ft::make_pair(31, 0));
+		ftTree.insert(ft::make_pair(32, 0));
+		ftTree.insert(ft::make_pair(39, 0));
+		ftTree.insert(ft::make_pair(50, 0));
+		ftTree.insert(ft::make_pair(60, 0));
+
+		ftTree.erase(30);
+
+		std::map<int, int>	stdTree;
+		stdTree.insert(std::make_pair(15, 0));
+		stdTree.insert(std::make_pair(10, 0));
+		stdTree.insert(std::make_pair(1, 0));
+		stdTree.insert(std::make_pair(12, 0));
+		stdTree.insert(std::make_pair(30, 0));
+		stdTree.insert(std::make_pair(22, 0));
+		stdTree.insert(std::make_pair(25, 0));
+		stdTree.insert(std::make_pair(20, 0));
+		stdTree.insert(std::make_pair(40, 0));
+		stdTree.insert(std::make_pair(33, 0));
+		stdTree.insert(std::make_pair(31, 0));
+		stdTree.insert(std::make_pair(32, 0));
+		stdTree.insert(std::make_pair(39, 0));
+		stdTree.insert(std::make_pair(50, 0));
+		stdTree.insert(std::make_pair(60, 0));
+
+		stdTree.erase(30);
+		print_data_of_compared(stdTree, ftTree);
+		ftTree.erase(1);
+		stdTree.erase(1);
+		print_data_of_compared(stdTree, ftTree);
+		ftTree.erase(15);
+		stdTree.erase(15);
+		print_data_of_compared(stdTree, ftTree);
+		stdTree.insert(std::make_pair(15, 0));
+		ftTree.insert(ft::make_pair(15, 0));
+		print_data_of_compared(stdTree, ftTree);
+		ftTree.erase(10);
+		stdTree.erase(10);
+		print_data_of_compared(stdTree, ftTree);
+	}
+	{
+		ft::map<int, int>	ftTree;
+		ftTree.insert(ft::make_pair(10, 0));
+		ftTree.insert(ft::make_pair(1, 0));
+
+		std::map<int, int>	stdTree;
+		stdTree.insert(std::make_pair(10, 0));
+		stdTree.insert(std::make_pair(1, 0));
+		ftTree.erase(10);
+		stdTree.erase(10);
+		print_data_of_compared(stdTree, ftTree);
+		ftTree.erase(1);
+		stdTree.erase(1);
+		print_data_of_compared(stdTree, ftTree);
+				ftTree.insert(ft::make_pair(10, 0));
+		ftTree.insert(ft::make_pair(1, 0));
+
+		stdTree.insert(std::make_pair(10, 0));
+		stdTree.insert(std::make_pair(1, 0));
+		ftTree.erase(10);
+		stdTree.erase(10);
+		print_data_of_compared(stdTree, ftTree);
+		ftTree.erase(1);
+		stdTree.erase(1);
+		print_data_of_compared(stdTree, ftTree);
+	}
+
+
+
+	{
+		std::vector<int>	v;
+		ft::map<int, int>	mp;
+		for (int i = 0, j = 0; i < 1000; ++i, ++j)
+			mp.insert(ft::make_pair(i, j));
+		mp.erase(mp.begin(), --mp.end());
+		std::cout << "SEGA" << std::endl;
+		print_ft_map(mp);
+		v.push_back(mp.begin()->first);
 	}
 }

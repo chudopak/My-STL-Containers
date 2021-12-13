@@ -58,12 +58,17 @@ namespace ft {
 			if (_node) {
 				if (_node->right) {
 					_node = _node->right;
-					while (_node->left)
+					while (_node->left) {
+						// std::cout << "Iter left" << std::endl;
+
 						_node = _node->left;
+					}
 				}
 				else {
-					while (_node->parent && _node->parent->right == _node)
+					while (_node->parent && _node->parent->right == _node) {
+						// std::cout << "Iter Right" << std::endl;
 						_node = _node->parent;
+					}
 					_node = _node->parent;
 				}
 			}

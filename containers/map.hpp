@@ -137,6 +137,14 @@ namespace ft {
 		 * Modifiers
 		 */
 
+		mapped_type& operator[] (const key_type& k)
+		{
+			iterator it = find(k);
+			if (it == end())
+				it = insert(ft::make_pair(k, mapped_type())).first;
+			return (it->second);
+		}
+
 		pair<iterator,bool>			insert(const value_type& val) {
 			pair<iterator,bool>		res = _bst.insert(val);
 			return (res);
@@ -150,6 +158,22 @@ namespace ft {
 		void						insert(InputIterator first, InputIterator last) {
 			for (; first != last; first++) {
 				_bst.insert(*first);
+			}
+		}
+
+		size_type					erase(const key_type & k) {
+			return (_bst.erase(k));
+		}
+
+		void						erase(iterator position) {
+			_bst.eraseIt(position);
+		}
+
+		void						erase(iterator first, iterator last) {
+
+			for(int i = 0; first != last; first++, i++) {
+				// std::cout << i << std::endl;
+				_bst.eraseIt(first);
 			}
 		}
 
@@ -180,28 +204,44 @@ namespace ft {
 		 * 
 		 */
 
-		iterator lower_bound (const key_type& k) {
+		iterator			find(const key_type & k) {
+			return (_bst.find(k));
+		}
+
+		const_iterator		find(const key_type & k) const {
+			return (_bst.find(k));
+		}
+
+		size_type			count(const key_type & k) const {
+			return (_bst.count(k));
+		}
+
+		iterator			lower_bound (const key_type& k) {
 			return (iterator(_bst.lower_bound(k)));
 		}
 
-		const_iterator lower_bound (const key_type& k) const {
+		const_iterator		lower_bound (const key_type& k) const {
 			return (const_iterator(_bst.lower_bound(k)));
 		}
 
-		iterator upper_bound (const key_type& k) {
+		iterator			upper_bound (const key_type& k) {
 			return (iterator(_bst.upper_bound(k)));
 		}
 
-		const_iterator upper_bound (const key_type& k) const {
+		const_iterator		upper_bound (const key_type& k) const {
 			return (const_iterator(_bst.upper_bound(k)));
 		}
 
-		pair<iterator, iterator> equal_range (const key_type& k) {
+		pair<iterator, iterator>				equal_range (const key_type& k) {
 				return (ft::make_pair(lower_bound(k), upper_bound(k)));
 		}
 
-		pair<const_iterator, const_iterator> equal_range (const key_type& k) const {
+		pair<const_iterator, const_iterator>	equal_range (const key_type& k) const {
 				return (ft::make_pair(lower_bound(k), upper_bound(k)));
+		}
+
+		allocator_type get_allocator() const {
+			return (_alloc);
 		}
 
 	private:
@@ -211,8 +251,7 @@ namespace ft {
 	};
 
 	template <typename Key, typename T, typename Compare, typename Allocator>
-	bool operator==(const map<Key, T, Compare, Allocator> &lhs, const map<Key, T, Compare, Allocator> &rhs)
-	{
+	bool operator==(const map<Key, T, Compare, Allocator> &lhs, const map<Key, T, Compare, Allocator> &rhs) {
 		typename map<Key, T, Compare, Allocator>::const_iterator	it = lhs.begin();
 		typename map<Key, T, Compare, Allocator>::const_iterator	ite = lhs.end();
 		typename map<Key, T, Compare, Allocator>::const_iterator	it2 = rhs.begin();
@@ -228,14 +267,12 @@ namespace ft {
 	}
 	
 	template <typename Key, typename T, typename Compare, typename Allocator>
-	bool operator!=(const map<Key, T, Compare, Allocator> &lhs, const map<Key, T, Compare, Allocator> &rhs)
-	{
+	bool operator!=(const map<Key, T, Compare, Allocator> &lhs, const map<Key, T, Compare, Allocator> &rhs) {
 		return (!(lhs == rhs));
 	}
 
 	template <typename Key, typename T, typename Compare, typename Allocator>
-	bool operator<(const map<Key, T, Compare, Allocator> &lhs, const map<Key, T, Compare, Allocator> &rhs)
-	{
+	bool operator<(const map<Key, T, Compare, Allocator> &lhs, const map<Key, T, Compare, Allocator> &rhs) {
 		typename map<Key, T, Compare, Allocator>::const_iterator	it = lhs.begin();
 		typename map<Key, T, Compare, Allocator>::const_iterator	ite = lhs.end();
 		typename map<Key, T, Compare, Allocator>::const_iterator	it2 = rhs.begin();
@@ -253,26 +290,22 @@ namespace ft {
 	}
 
 	template <typename Key, typename T, typename Compare, typename Allocator>
-	bool operator>(const map<Key, T, Compare, Allocator> &lhs, const map<Key, T, Compare, Allocator> &rhs)
-	{
+	bool operator>(const map<Key, T, Compare, Allocator> &lhs, const map<Key, T, Compare, Allocator> &rhs) {
 		return (rhs < lhs);
 	}
 
 	template <typename Key, typename T, typename Compare, typename Allocator>
-	bool operator<=(const map<Key, T, Compare, Allocator> &lhs, const map<Key, T, Compare, Allocator> &rhs)
-	{
+	bool operator<=(const map<Key, T, Compare, Allocator> &lhs, const map<Key, T, Compare, Allocator> &rhs) {
 		return (!(rhs < lhs));
 	}
 
 	template <typename Key, typename T, typename Compare, typename Allocator>
-	bool operator>=(const map<Key, T, Compare, Allocator> &lhs, const map<Key, T, Compare, Allocator> &rhs)
-	{
+	bool operator>=(const map<Key, T, Compare, Allocator> &lhs, const map<Key, T, Compare, Allocator> &rhs) {
 		return (!(lhs < rhs));
 	}
 
 	template <typename Key, typename T, typename Compare, typename Allocator>
-	void swap(map<Key, T, Compare, Allocator> &lhs, map<Key, T, Compare, Allocator> &rhs)
-	{
+	void swap(map<Key, T, Compare, Allocator> &lhs, map<Key, T, Compare, Allocator> &rhs) {
 		lhs.swap(rhs);
 	}
 }

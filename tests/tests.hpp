@@ -17,6 +17,7 @@
 # include <stack>
 # include <map>
 # include <memory>
+# include <list>
 
 
 void	VectorTests();
