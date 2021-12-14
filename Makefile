@@ -30,7 +30,7 @@ $(NAME): $(OBJ)
 	clang++ $(FLAGS) -g -o $(NAME) $(OBJ)
 
 clean:
-	rm -rf $(OBJ)
+	rm -rf $(OBJ) allTests.dSYM
 
 fclean: clean
 	rm -rf $(NAME)
