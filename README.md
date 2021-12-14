@@ -14,7 +14,7 @@ The implementation of these containers contains all the methods of the standard 
 
 ## Tests
 I made my own tests, which can be run by doing `make` and then run `./allTests`.
-If you don't trust me then do `make tester` and it will donwload and run tester from github.
+If you don't trust me :scream: :cry: then do `make tester` and it will donwload and run tester from github.
 
 ## Notes
 Re-implementing those containers wasn't meaningful to me so I found it to be boring. But now I have a better understanding of **binary search trees** and operations on them. Also I lost a ton of nerves when forgot to mark function as `const` and it was Segmentation fault every time I run tests. :smiling_face_with_tear: :exploding_head:
