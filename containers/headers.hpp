@@ -9,10 +9,10 @@
 # include <sys/time.h>
 
 
-# include "iterators/random_access_iterator.hpp"
-# include "iterators/utils.hpp"
-# include "iterators/reverse_iterator.hpp"
-# include "iterators/binary_search_tree_iterator.hpp"
-# include "iterators/binary_search_tree.hpp"
+# include "utils/random_access_iterator.hpp"
+# include "utils/utils.hpp"
+# include "utils/reverse_iterator.hpp"
+# include "utils/binary_search_tree_iterator.hpp"
+# include "utils/binary_search_tree.hpp"
 
 #endif

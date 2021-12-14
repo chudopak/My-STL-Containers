@@ -1,10 +1,10 @@
 FLAGS		=	-Wall -Wextra -Werror --std=c++98
 
-ITERATORS	=	contaiters/iterators/random_access_iterator.hpp \
-				contaiters/iterators/reverse_iterator.hpp \
-				contaiters/iterators/utils.hpp \
-				containers/iterators/binary_search_tree.hpp \
-				containers/iterators/binary_search_tree_iterator.hpp
+ITERATORS	=	contaiters/utils/random_access_iterator.hpp \
+				contaiters/utils/reverse_iterator.hpp \
+				contaiters/utils/utils.hpp \
+				containers/utils/binary_search_tree.hpp \
+				containers/utils/binary_search_tree_iterator.hpp
 
 CONTAINERS	=	containers/vector.hpp \
 				containers/stack.hpp \
