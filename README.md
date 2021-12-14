@@ -7,4 +7,4 @@ The implementation of these containers contains all the methods of the standard 
 
 ## Used Data Structures
 ### Binary Search Tree
-> For ***map*** 
+  * For ***map*** 
