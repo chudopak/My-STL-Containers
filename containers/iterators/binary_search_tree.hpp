@@ -246,8 +246,7 @@ namespace ft {
 
 		void				eraseIt(iterator position) {
 			node_pointer	node = _findNodeByKey(position->first);
-			// std::cout << node->value.first << std::endl;
-			// std::cout << _size << std::endl;
+
 			if (node == _end_node)
 				return ;
 			_eraseNode(node);
@@ -343,7 +342,6 @@ namespace ft {
 				return (NULL);
 			}
 			while (node->left || node->right) {
-				// std::cout << _size << std::endl;
 				if (node->left) {
 					node = node->left;
 				} else {
@@ -546,7 +544,6 @@ namespace ft {
 				_eraseIfNoNodesAfter(node);
 			}
 			else if (!node->left && node->right) {
-				// std::cout << "Right" << std::endl;
 				_eraseIfOneNodeAfter(node, true);
 			}
 			else if (node->left && !node->right) {

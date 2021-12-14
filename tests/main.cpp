@@ -2,10 +2,8 @@
 
 int	main(void) {
 
-	// UtilsTest();
-	// leaksTest();
-	// VectorTests();
-	// StackTest();
+	VectorTests();
+	StackTest();
 	MapTest();
 	return (0);
 }

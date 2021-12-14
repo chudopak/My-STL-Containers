@@ -38,12 +38,10 @@ namespace ft
 			_capacity(NULL),
 			_alloc(alloc)
 		{
-			//https://www.cplusplus.com/reference/memory/allocator/allocate/
 			_start = _alloc.allocate(n);
 			_capacity = _start + n;
 			_end = _start;
 			for (size_type i = 0; i < n; i++) {
-				//https://www.cplusplus.com/reference/memory/allocator/construct/
 				_alloc.construct(_end, val);
 				_end++;
 			}
@@ -272,6 +270,7 @@ namespace ft
 				pointer		newEnd = pointer();
 				pointer		newCapacity = pointer();
 				size_type	newSize;
+				int			constructedElements = 0;
 				if (this->size() > 100000)
 					newSize =  this->size() + 1 + static_cast<size_type>((this->size() / 100));
 				else
@@ -281,11 +280,21 @@ namespace ft
 				newEnd = newStart + this->size() + 1;
 				newCapacity = newStart + newSize;
 
-				for (int i = 0; i < &(*position) - _start; i++)
-					_alloc.construct(newStart + i, *(_start + i));
-				_alloc.construct(newStart + cell_index, val);
-				for (size_type i = 0; i < this->size() - (&(*position) - _start); i++)
-					_alloc.construct(newStart + (&(*position) - _start) + 1 + i, *(&(*position) + i));
+				try {
+					for (int i = 0; i < &(*position) - _start; i++, constructedElements++)
+						_alloc.construct(newStart + i, *(_start + i));
+					_alloc.construct(newStart + cell_index, val);
+					constructedElements++;
+					for (size_type i = 0; i < this->size() - (&(*position) - _start); i++, constructedElements++)
+						_alloc.construct(newStart + (&(*position) - _start) + 1 + i, *(&(*position) + i));
+				} catch (...) {
+					iterator it = newStart;
+					for (int i = 0; i < constructedElements; i++, it++) {
+						it->~value_type();
+					}
+					_alloc.deallocate(newStart, newCapacity - newStart);
+					throw ;
+				}
 				if (_start != NULL)
 					_alloc.deallocate(_start, this->capacity());
 				_start = newStart;
@@ -318,6 +327,8 @@ namespace ft
 				pointer		newEnd = pointer();
 				pointer		newCapacity = pointer();
 				size_type	newSize;
+				int			constructedElements = 0;
+
 				if (this->size() > 100000)
 					newSize = this->size() + n + static_cast<size_type>((this->size() / 100));
 				else
@@ -327,12 +338,21 @@ namespace ft
 				newEnd = newStart + this->size() + n;
 				newCapacity = newStart + newSize;
 
-				for (int i = 0; i < &(*position) - _start; i++)
-					_alloc.construct(newStart + i, *(_start + i));
-				for (size_type i = 0; i < n; i++)
-					_alloc.construct(newStart + cell_index + i, val);
-				for (size_type i = 0; i < this->size() - cell_index; i++)
-					_alloc.construct(newStart + cell_index + n + i, *(&(*position) + i));
+				try {
+					for (int i = 0; i < &(*position) - _start; i++, constructedElements++)
+						_alloc.construct(newStart + i, *(_start + i));
+					for (size_type i = 0; i < n; i++, constructedElements++)
+						_alloc.construct(newStart + cell_index + i, val);
+					for (size_type i = 0; i < this->size() - cell_index; i++, constructedElements++)
+						_alloc.construct(newStart + cell_index + n + i, *(&(*position) + i));
+				} catch (...) {
+					iterator it = newStart;
+					for (int i = 0; i < constructedElements; i++, it++) {
+						it->~value_type();
+					}
+					_alloc.deallocate(newStart, newCapacity - newStart);
+					throw ;
+				}
 				if (_start != NULL)
 					_alloc.deallocate(_start, this->capacity());
 				_start = newStart;
@@ -345,8 +365,6 @@ namespace ft
 		void	insert(iterator position, InputIterator first, InputIterator last,
 				typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type* = NULL) {
 
-			// if (!ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::value)
-			// 	throw (ft::InvalidIteratorException<typename ft::is_ft_iterator_tagged<typename ft::iterator_traits<InputIterator>::iterator_category >::type>());
 			size_type	dist = static_cast<size_type>(ft::distance(first, last));
 			if (dist + size() < capacity()) {
 				for (pointer it = _end; it >= &(*position) ; it--) {
@@ -361,6 +379,7 @@ namespace ft
 				pointer		newEnd = pointer();
 				pointer		newCapacity = pointer();
 				size_type	newSize;
+				int			constructedElements = 0;
 				if (this->size() > 100000)
 					newSize = this->size() + dist + static_cast<size_type>((this->size() / 100));
 				else
@@ -370,15 +389,26 @@ namespace ft
 				newEnd = newStart + this->size() + dist;
 				newCapacity = newStart + newSize;
 
-				for (int i = 0; i < &(*position) - _start; i++)
-					_alloc.construct(newStart + i, *(_start + i));
-				for (int i = 0; &(*first) != &(*last); first++, i++)
-					_alloc.construct(newStart + (&(*position) - _start) + i, *first);
-				for (size_type i = 0; i < this->size() - (&(*position) - _start); i++)
-					_alloc.construct(newStart + (&(*position) - _start) + dist + i, *(&(*position) + i));
+				try {
+					for (int i = 0; i < &(*position) - _start; i++, constructedElements++) {
+						_alloc.construct(newStart + i, *(_start + i));
+					}
+					for (int i = 0; &(*first) != &(*last); first++, i++, constructedElements++) {
+						_alloc.construct(newStart + (&(*position) - _start) + i, *first);
+					}
+					for (size_type i = 0; i < this->size() - (&(*position) - _start); i++, constructedElements++) {
+						_alloc.construct(newStart + (&(*position) - _start) + dist + i, *(&(*position) + i));
+					}
+				} catch (...) {
+					iterator it = newStart;
+					for (int i = 0; i < constructedElements; i++, it++) {
+						it->~value_type();
+					}
+					_alloc.deallocate(newStart, newCapacity - newStart);
+					throw ;
+				}
 				for (size_type i = 0; i < this->size(); i++)
 					_alloc.destroy(_start + i);
-				
 				if (_start != NULL)
 					_alloc.deallocate(_start, this->capacity());
 				_start = newStart;

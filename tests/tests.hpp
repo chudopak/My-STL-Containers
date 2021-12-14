@@ -22,8 +22,6 @@
 
 void	VectorTests();
 void	StackTest();
-void	leaksTest();
-void	UtilsTest();
 void	MapTest();
 
 #endif

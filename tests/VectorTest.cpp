@@ -103,9 +103,9 @@ void	print_data_of_compared(std::vector<T>& stl, std::vector<T>& ft) {
 
 void	VectorTests(void) {
  
-	std::cout << YELLOW << "****************" << std::endl;
-	std::cout << YELLOW << "**** Vector ****" << std::endl;
-	std::cout << YELLOW << "****************" << std::endl;
+	std::cout << YELLOW << "\t****************" << std::endl;
+	std::cout << YELLOW << "\t**** Vector ****" << std::endl;
+	std::cout << YELLOW << "\t****************" << std::endl;
 
 
 	std::cout << BOLD_GREEN << "\t____Testing empty container____" << STANDART << std::endl;
@@ -234,12 +234,12 @@ void	VectorTests(void) {
 		print_time(stlDiff, ftDiff);
 	}
 
-	std::cout << BOLD_GREEN << "\t____Testing Copy Constructor With 30000000 Size____" << STANDART << std::endl;
+	std::cout << BOLD_GREEN << "\t____Testing Copy Constructor With 3000000 Size____" << STANDART << std::endl;
 	{
 		struct timeval		stlStart;
 		struct timeval		stlEnd;
 		
-		std::vector<int> stdBig2(30000000, 1);
+		std::vector<int> stdBig2(3000000, 1);
 		gettimeofday(&stlStart, NULL);
 		long	stlStartMil = stlStart.tv_sec * 1000 + stlStart.tv_usec / 1000;
 
@@ -253,7 +253,7 @@ void	VectorTests(void) {
 		struct timeval		ftStart;
 		struct timeval		ftEnd;
 
-		ft::vector<int> ftBig2(30000000, 1);
+		ft::vector<int> ftBig2(3000000, 1);
 		gettimeofday(&ftStart, NULL);
 		long	ftStartMil = ftStart.tv_sec * 1000 + ftStart.tv_usec / 1000;
 
@@ -286,10 +286,6 @@ void	VectorTests(void) {
 			i++;
 		}
 
-		
-		print_ft_vector(ft_with_size);
-		print_std_vector(stl_with_size);
-
 		ft_with_size.clear();
 		stl_with_size.clear();
 
@@ -307,8 +303,6 @@ void	VectorTests(void) {
 
 		ft.reserve(15);
 		stl.reserve(15);
-		print_ft_vector(ft);
-		print_std_vector(stl);
 		
 		std::cout << YELLOW << "After reserve(15)" << STANDART <<std::endl;
 		print_data_of_compared(stl, ft);

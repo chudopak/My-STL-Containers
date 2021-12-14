@@ -13,10 +13,8 @@ CONTAINERS	=	containers/vector.hpp \
 INC			=	${ITERATORS} ${CONTAINERS} ./tests/tests.hpp
 
 SRCS		=	tests/main.cpp \
-				tests/leaksTest.cpp \
 				tests/VectorTest.cpp \
 				tests/StackTest.cpp \
-				tests/UtilsTests.cpp \
 				tests/MapTest.cpp
 
 OBJ			=	$(SRCS:.cpp=.o)
@@ -39,4 +37,17 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: re all clean fclean
+tester:
+	@cd containers ; \
+	git clone https://github.com/mli42/containers_test.git ; \
+	cd ./containers_test/ ; \
+	./do.sh vector map stack
+
+repeat_tester:
+	@cd ./containers/containers_test ; \
+	./do.sh vector map stack
+
+clean_tester:
+	rm -rf ./containers/containers_test
+
+.PHONY: re all clean fclean tester

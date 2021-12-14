@@ -55,9 +55,9 @@ void	print_data_of_compared(std::vector<T>& stl, std::vector<T>& ft) {
 
 void	StackTest() {
 	std::cout << std::endl << std::endl << std::endl;
-	std::cout << YELLOW << "\t\t***************" << std::endl;
-	std::cout << YELLOW << "\t\t**** Stack ****" << std::endl;
-	std::cout << YELLOW << "\t\t***************" << std::endl;
+	std::cout << YELLOW << "\t***************" << std::endl;
+	std::cout << YELLOW << "\t**** Stack ****" << std::endl;
+	std::cout << YELLOW << "\t***************" << std::endl;
 
 	{
 		std::cout << BOLD_GREEN << "\t____Testing constructor____" << STANDART << std::endl;

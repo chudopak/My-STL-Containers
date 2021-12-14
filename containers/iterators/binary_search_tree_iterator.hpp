@@ -37,7 +37,6 @@ namespace ft {
 			if (*this == it)
 				return (*this);
 			this->_node = it._node;
-			// std::cout << "WE In assingment" << std::endl;
 			return (*this);
 		}
 
@@ -59,14 +58,11 @@ namespace ft {
 				if (_node->right) {
 					_node = _node->right;
 					while (_node->left) {
-						// std::cout << "Iter left" << std::endl;
-
 						_node = _node->left;
 					}
 				}
 				else {
 					while (_node->parent && _node->parent->right == _node) {
-						// std::cout << "Iter Right" << std::endl;
 						_node = _node->parent;
 					}
 					_node = _node->parent;
