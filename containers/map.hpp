@@ -81,6 +81,8 @@ namespace ft {
 			_alloc(x._alloc)
 		{ }
 
+		virtual ~map() { }
+
 		/**
 		 * Iterators
 		 */
@@ -171,9 +173,12 @@ namespace ft {
 
 		void						erase(iterator first, iterator last) {
 
-			for(int i = 0; first != last; first++, i++) {
-				// std::cout << i << std::endl;
-				_bst.eraseIt(first);
+			iterator	tmp;
+
+			while (first != last) {
+				tmp = first;
+				first++;
+				_bst.eraseIt(tmp);
 			}
 		}
 

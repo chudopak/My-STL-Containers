@@ -513,22 +513,6 @@ namespace ft {
 
 			_changeNodeConnections(node, newNode);
 
-			// if (node->parent) {
-			// 	if (node->parent->left == node) {
-			// 		node->parent->left = newNode;
-			// 	} else {
-			// 		node->parent->right = newNode;
-			// 	}
-			// } else {
-			// 	_root = newNode;
-			// }
-			// newNode->parent = node->parent;
-			// if (node->left != newNode) {
-			// 	node->left->parent = newNode;
-			// 	newNode->left = node->left;
-			// }
-			// node->right->parent = newNode;
-			// newNode->right = node->right;
 			newNodeOldParent->right = newNodeOldRight;
 			if (newNodeOldRight)
 				newNodeOldRight->parent = newNodeOldParent;
@@ -548,25 +532,6 @@ namespace ft {
 			node_pointer	newNodeOldRight = newNode->right;
 
 			_changeNodeConnections(node, newNode);
-			// if (node->parent) {
-			// 	if (node->parent->left == node) {
-			// 		node->parent->left = newNode;
-			// 	} else {
-			// 		node->parent->right = newNode;
-			// 	}
-			// } else {
-			// 	_root = newNode;
-			// }
-			
-			// newNode->parent = node->parent;
-			// if (node->left != newNode) {
-			// 	node->left->parent = newNode;
-			// 	newNode->left = node->left;
-			// }
-			// if (node->right != newNode) {
-			// 	node->right->parent = newNode;
-			// 	newNode->right = node->right;
-			// }
 			newNodeOldParent->left = newNodeOldRight;
 			if (newNodeOldRight)
 				newNodeOldRight->parent = newNodeOldParent;
