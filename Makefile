@@ -48,6 +48,6 @@ repeat_tester:
 	./do.sh vector map stack
 
 clean_tester:
-	rm -rf ./containers/containers_test
+	@rm -rf ./containers/containers_test
 
 .PHONY: re all clean fclean tester
