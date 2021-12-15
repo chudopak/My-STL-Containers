@@ -24,10 +24,6 @@ namespace ft
 
 		template <class Iter>
 		reverse_iterator (const reverse_iterator<Iter>& rev_it) : _elem(rev_it.base()) {}
-		/* template <class Iter>
-		reverse_iterator (const reverse_iterator<Iter>& rev_it) {
-			_elem = rev_it.base();
-		} */
 
 		virtual ~reverse_iterator() {}
 

@@ -47,9 +47,6 @@ namespace ft
 			}
 		}
 
-		/*
-		**	typename in arguments needet to pass iterators.
-		*/
 		template <class InputIterator>
 		vector (InputIterator first, InputIterator last,
 				const allocator_type& alloc = allocator_type(),
@@ -105,7 +102,6 @@ namespace ft
 			return (allocator_type().max_size());
 		}
 
-		//test this
 		void		resize(size_type n, value_type val = value_type()) {
 			if (n > this->max_size())
 				throw (std::length_error("vector::resize"));
