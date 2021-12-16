@@ -251,6 +251,9 @@ namespace ft
 			return (first);
 		}
 
+		/**
+		 * Bad code, i don't usualy write like that but i needed to do it fast ((
+		 */
 		iterator		insert(iterator position, const value_type& val) {
 
 			size_type cell_index = &(*position) - _start;
